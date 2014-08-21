@@ -1,0 +1,187 @@
+/* app css stylesheet */
+
+/* 縦100% */
+html, body {
+  height: 100%;
+  width: 100%;
+}
+a {
+  cursor: pointer;
+}
+.bg {
+  /*background-image: url(../images/e0e0e0.png);*/
+  background-color: #F1F2F6;
+}
+.menu {
+  list-style: none;
+  border-bottom: 0.1em solid black;
+  margin-bottom: 2em;
+  padding: 0 0 0.5em;
+}
+
+.menu:before {
+  content: "[";
+}
+
+.menu:after {
+  content: "]";
+}
+
+.menu > li {
+  display: inline;
+}
+
+.menu > li:before {
+  content: "|";
+  padding-right: 0.3em;
+}
+
+.menu > li:nth-child(1):before {
+  content: "";
+  padding: 0;
+}
+
+.panel-magin {
+  margin-top: 30px;
+}
+
+.tweet {
+  font-size: 28px;
+}
+
+.word {
+  padding: 0 25px;
+}
+
+.amazon {
+  padding: 30px 0;
+}
+
+.select-arrow {
+  -moz-transition: left .1s;
+  -webkit-transition: left .1s;
+  -o-transition: left .1s;
+  transition: left .1s;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  margin: 20px 0 0 20px;
+}
+
+.arrow-slide {
+  -moz-transition: left .5s;
+  -webkit-transition: left .5s;
+  -o-transition: left .5s;
+  transition: left .5s;
+  left: 260px;
+}
+
+.select-view {
+  float: left;
+  margin: 10px;
+}
+
+.sidebar {
+  -moz-transition: left .1s;
+  -webkit-transition: left .1s;
+  -o-transition: left .1s;
+  transition: left .1s;
+  width: 260px;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: -260px;
+  z-index: 999;
+  max-height: 1690px;
+  overflow-y: scroll;
+}
+.slide-out {
+  -moz-transition: left .5s;
+  -webkit-transition: left .5s;
+  -o-transition: left .5s;
+  transition: left .5s;
+  left: 0px;
+}
+
+.container {
+    height: 100%;
+}
+
+/* Google Login */
+.form-signin
+{
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-signin .form-signin-heading, .form-signin .checkbox
+{
+    margin-bottom: 10px;
+}
+.form-signin .checkbox
+{
+    font-weight: normal;
+}
+.form-signin .form-control
+{
+    position: relative;
+    font-size: 16px;
+    height: auto;
+    padding: 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.form-signin .form-control:focus
+{
+    z-index: 2;
+}
+.form-signin input[type="text"]
+{
+    margin-bottom: -1px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.form-signin input[type="password"]
+{
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.account-wall
+{
+    margin-top: 20px;
+    padding: 40px 0px 20px 0px;
+    background-color: rgba(255, 255, 255, 0.4);
+    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+.login-title
+{
+    color: #555;
+    font-size: 18px;
+    font-weight: 400;
+    display: block;
+}
+.profile-img
+{
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 10px;
+    display: block;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+}
+.need-help
+{
+    margin-top: 10px;
+}
+.new-account
+{
+    display: block;
+    margin-top: 10px;
+}
