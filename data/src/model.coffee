@@ -71,7 +71,10 @@ class ClientProvider
     # connection = getConnection()
     UUID = params['UUID'] || 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
     console.log "findStoreInfo UUID", UUID
-    client.query 'SELECT * FROM stores WHERE UUID = ?', UUID,  (err, data) ->
+    client.query 'SELECT * FROM stores
+    LEFT JOIN infomations ON stores.id = infomations.storeID
+    WHERE stores.UUID = ?
+    ORDER BY infomations.id DESC LIMIT 1', UUID,  (err, data) ->
       console.log 'insertInfomationTestData = ', data
       # closeConnection client
       callback err, data

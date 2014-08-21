@@ -76,7 +76,7 @@
       var UUID;
       UUID = params['UUID'] || 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013';
       console.log("findStoreInfo UUID", UUID);
-      return client.query('SELECT * FROM stores WHERE UUID = ?', UUID, function(err, data) {
+      return client.query('SELECT * FROM stores LEFT JOIN infomations ON stores.id = infomations.storeID WHERE stores.UUID = ? ORDER BY infomations.id DESC LIMIT 1', UUID, function(err, data) {
         console.log('insertInfomationTestData = ', data);
         return callback(err, data);
       });
