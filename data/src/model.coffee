@@ -9,15 +9,23 @@ DB_PASSWORD = process.env.DB_PASSWORD || 'rize'
 
 
 #mysqlクライアント作成
-client = mysql.createConnection(
-  host: DB_HOST
-  database: DB_NAME
-  user: DB_USER
-  password: DB_PASSWORD
-)
 
 
 class ClientProvider
+
+  # 接続
+  getConnection: ->
+    client = mysql.createConnection(
+      host: DB_HOST
+      database: DB_NAME
+      user: DB_USER
+      password: DB_PASSWORD
+    )
+
+  # 切断
+  closeConnection: (client) ->
+    client.end()
+
 
   ##
   # テストデータ格納用
@@ -37,7 +45,9 @@ class ClientProvider
       createdAt: nowDate
       updatedAt: nowDate
 
-    client.query "INSERT INTO stores SET ?", store, (err, data) ->
+    client = @getConnection()
+    client.query "INSERT INTO stores SET ?", store, (err, data) =>
+      @closeConnection client
       return
 
   insertCategoryTestData: (callback) ->
@@ -47,7 +57,9 @@ class ClientProvider
       id: 1
       name: '飲食店'
 
-    client.query "INSERT INTO categories SET ?", category, (err, data) ->
+    client = @getConnection()
+    client.query "INSERT INTO categories SET ?", category, (err, data) =>
+      @closeConnection client
       callback err, data
 
   insertInfomationTestData: (callback) ->
@@ -60,27 +72,25 @@ class ClientProvider
       createdAt: nowDate
       updatedAt: nowDate
 
-    client.query "INSERT INTO infomations SET ?", infomation, (err, data) ->
+    client = @getConnection()
+    client.query "INSERT INTO infomations SET ?", infomation, (err, data) =>
+      @closeConnection client
       return
 
   # お店の
   findStoreInfo: (params, callback) ->
-    # connection = getConnection()
+    client = @getConnection()
     console.log '-------- findStoreInfo --------', params
     UUID = params['UUID'] || 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
-    client.query 'SELECT * FROM stores
-    LEFT JOIN infomations ON stores.id = infomations.storeID
+    client.query 'SELECT storeID, salesText, categories.name AS categoryName
+    FROM stores LEFT JOIN infomations ON stores.id = infomations.storeID
+    LEFT JOIN categories ON stores.categoryID = categories.id
     WHERE stores.UUID = ?
-    ORDER BY infomations.id DESC LIMIT 1', UUID,  (err, data) ->
-      # closeConnection client
+    ORDER BY infomations.id DESC LIMIT 1', UUID,  (err, data) =>
+      @closeConnection client
       callback err, data
 
   #
   findStoreDetail: (params, callback) ->
-
-
-  # コネクションクローズ
-  close: (err) ->
-    client.end()
 
 exports.ClientProvider = new ClientProvider()

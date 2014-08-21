@@ -27,18 +27,27 @@ exports.findStoreInfo = function(req, res) {
 
 exports.init = function(req, res) {
 
-  my.c("init");
+  my.c('init');
 
   ClientProvider.insertStoreTestData(function(err) {
-    console.log("--------- insertStoreTestData --------");
+    console.log('--------- insertStoreTestData --------');
+    if(err) {
+      console.log(err);
+    }
   });
 
   ClientProvider.insertCategoryTestData(function(err) {
-    console.log("--------- insertCategoryTestData --------");
+    console.log('--------- insertCategoryTestData --------');
+    if(err) {
+      console.log(err);
+    }
   });
 
   ClientProvider.insertInfomationTestData(function(err) {
-    console.log("--------- insertInfomationTestData --------");
+    console.log('--------- insertInfomationTestData --------');
+    if(err) {
+      console.log(err);
+    }
   });
 
 
