@@ -29,7 +29,7 @@ class ClientProvider
     store =
       id: 'test'
       email: 'test@gmail.com'
-      email: 'test'
+      password: 'test'
       UUID: 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
       name: 'テスト'
       categoryID: 1
@@ -37,8 +37,8 @@ class ClientProvider
       createdAt: nowDate
       updatedAt: nowDate
 
+    console.log '-------- insertStoreTestData --------'
     client.query "INSERT INTO stores SET ?", store, (err, data) ->
-      console.log 'insertStoreTestData = ', data
       return
 
   insertCategoryTestData: (callback) ->
@@ -48,6 +48,7 @@ class ClientProvider
       id: 1
       name: '飲食店'
 
+    console.log '-------- insertCategoryTestData --------'
     client.query "INSERT INTO categories SET ?", category, (err, data) ->
       console.log 'insertCategoryTestData = ', data
       callback err, data
@@ -62,20 +63,20 @@ class ClientProvider
       createdAt: nowDate
       updatedAt: nowDate
 
+    console.log '-------- insertInfomationTestData --------'
     client.query "INSERT INTO infomations SET ?", infomation, (err, data) ->
-      console.log 'insertInfomationTestData = ', data
       return
 
   # お店の
   findStoreInfo: (params, callback) ->
     # connection = getConnection()
+    console.log '-------- findStoreInfo --------', params
     UUID = params['UUID'] || 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
     console.log "findStoreInfo UUID", UUID
     client.query 'SELECT * FROM stores
     LEFT JOIN infomations ON stores.id = infomations.storeID
     WHERE stores.UUID = ?
     ORDER BY infomations.id DESC LIMIT 1', UUID,  (err, data) ->
-      console.log 'insertInfomationTestData = ', data
       # closeConnection client
       callback err, data
 
@@ -86,28 +87,5 @@ class ClientProvider
   # コネクションクローズ
   close: (err) ->
     client.end()
-
-
-
-# #データベース作成作成
-# client.query 'CREATE DATABASE ' + settings.DB_NAME, (err) ->
-#   throw err  if err and err.number isnt mysql.ERROR_DB_CREATE_EXISTS
-#   return
-
-# #データベース選択
-# client.query 'USE ' + settings.DB_NAME
-
-# #テーブル作成
-# client.query 'CREATE TABLE ' + settings.TABLE +
-#  '(id INT(10) AUTO_INCREMENT, ' +
-#   'name VARCHAR(100), ' + 'PRIMARY KEY (id))'
-
-# #テストデータ作成
-# client.query 'INSERT INTO ' + TABLE + ' ' +
-# 'SET name = ?', ['taro'], (err, info) ->
-#   console.log 'insertID = ' + info.insertId
-#   return
-
-
 
 exports.ClientProvider = new ClientProvider()
