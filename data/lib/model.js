@@ -39,7 +39,6 @@
         createdAt: nowDate,
         updatedAt: nowDate
       };
-      console.log('-------- insertStoreTestData --------');
       return client.query("INSERT INTO stores SET ?", store, function(err, data) {});
     };
 
@@ -50,9 +49,7 @@
         id: 1,
         name: '飲食店'
       };
-      console.log('-------- insertCategoryTestData --------');
       return client.query("INSERT INTO categories SET ?", category, function(err, data) {
-        console.log('insertCategoryTestData = ', data);
         return callback(err, data);
       });
     };
@@ -67,7 +64,6 @@
         createdAt: nowDate,
         updatedAt: nowDate
       };
-      console.log('-------- insertInfomationTestData --------');
       return client.query("INSERT INTO infomations SET ?", infomation, function(err, data) {});
     };
 
@@ -75,7 +71,6 @@
       var UUID;
       console.log('-------- findStoreInfo --------', params);
       UUID = params['UUID'] || 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013';
-      console.log("findStoreInfo UUID", UUID);
       return client.query('SELECT * FROM stores LEFT JOIN infomations ON stores.id = infomations.storeID WHERE stores.UUID = ? ORDER BY infomations.id DESC LIMIT 1', UUID, function(err, data) {
         return callback(err, data);
       });

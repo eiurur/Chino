@@ -30,15 +30,15 @@ exports.init = function(req, res) {
   my.c("init");
 
   ClientProvider.insertStoreTestData(function(err) {
-    console.log("--------- find init --------");
+    console.log("--------- insertStoreTestData --------");
   });
 
   ClientProvider.insertCategoryTestData(function(err) {
-    console.log("--------- find init --------");
+    console.log("--------- insertCategoryTestData --------");
   });
 
   ClientProvider.insertInfomationTestData(function(err) {
-    console.log("--------- find init --------");
+    console.log("--------- insertInfomationTestData --------");
   });
 
 

@@ -37,7 +37,6 @@ class ClientProvider
       createdAt: nowDate
       updatedAt: nowDate
 
-    console.log '-------- insertStoreTestData --------'
     client.query "INSERT INTO stores SET ?", store, (err, data) ->
       return
 
@@ -48,9 +47,7 @@ class ClientProvider
       id: 1
       name: '飲食店'
 
-    console.log '-------- insertCategoryTestData --------'
     client.query "INSERT INTO categories SET ?", category, (err, data) ->
-      console.log 'insertCategoryTestData = ', data
       callback err, data
 
   insertInfomationTestData: (callback) ->
@@ -63,7 +60,6 @@ class ClientProvider
       createdAt: nowDate
       updatedAt: nowDate
 
-    console.log '-------- insertInfomationTestData --------'
     client.query "INSERT INTO infomations SET ?", infomation, (err, data) ->
       return
 
@@ -72,7 +68,6 @@ class ClientProvider
     # connection = getConnection()
     console.log '-------- findStoreInfo --------', params
     UUID = params['UUID'] || 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
-    console.log "findStoreInfo UUID", UUID
     client.query 'SELECT * FROM stores
     LEFT JOIN infomations ON stores.id = infomations.storeID
     WHERE stores.UUID = ?

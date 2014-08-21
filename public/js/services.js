@@ -17,7 +17,4 @@ angular.module('myApp.services', [])
       }
     };
 
-    // this.random = function() {
-    //   return this.items[Math.floor(Math.random() * this.items.length)];
-    // }
   });
