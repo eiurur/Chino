@@ -15,6 +15,7 @@ class ClientProvider
 
   # 接続
   getConnection: ->
+    console.log DB_HOST, DB_NAME, DB_USER, DB_PASSWORD
     client = mysql.createConnection(
       host: DB_HOST
       database: DB_NAME

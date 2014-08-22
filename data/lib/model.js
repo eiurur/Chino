@@ -20,6 +20,7 @@
 
     ClientProvider.prototype.getConnection = function() {
       var client;
+      console.log(DB_HOST, DB_NAME, DB_USER, DB_PASSWORD);
       return client = mysql.createConnection({
         host: DB_HOST,
         database: DB_NAME,
