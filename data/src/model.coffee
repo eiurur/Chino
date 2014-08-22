@@ -96,7 +96,7 @@ class ClientProvider
     client = @getConnection()
     client.query 'SELECT stores.name AS storeName, salesText,
     categories.name AS categoryName
-    FROM stores LEFT JOIN infomations ON stores.id = infomations.storeID
+    FROM stores LEFT JOIN infomations ON stores.UUID = infomations.UUID
     LEFT JOIN categories ON stores.categoryID = categories.id
     WHERE stores.UUID = ?
     ORDER BY infomations.id DESC LIMIT 1', UUID,  (err, data) =>
@@ -120,7 +120,7 @@ class ClientProvider
     client = @getConnection()
     client.query 'SELECT stores.name AS storeName, salesText,
     categories.name AS categoryName
-    FROM stores LEFT JOIN infomations ON stores.id = infomations.storeID
+    FROM stores LEFT JOIN infomations ON stores.UUID = infomations.UUID
     LEFT JOIN categories ON stores.categoryID = categories.id
     WHERE stores.UUID = ?
     ORDER BY infomations.id DESC LIMIT 1', UUID,  (err, data) =>

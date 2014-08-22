@@ -97,7 +97,7 @@
       console.log('-------- findStoreInfo --------', params);
       UUID = params['UUID'] || my.createHash('b0fc4601-14a6-43a1-abcd-cb9cfddb4013');
       client = this.getConnection();
-      return client.query('SELECT stores.name AS storeName, salesText, categories.name AS categoryName FROM stores LEFT JOIN infomations ON stores.id = infomations.storeID LEFT JOIN categories ON stores.categoryID = categories.id WHERE stores.UUID = ? ORDER BY infomations.id DESC LIMIT 1', UUID, (function(_this) {
+      return client.query('SELECT stores.name AS storeName, salesText, categories.name AS categoryName FROM stores LEFT JOIN infomations ON stores.UUID = infomations.UUID LEFT JOIN categories ON stores.categoryID = categories.id WHERE stores.UUID = ? ORDER BY infomations.id DESC LIMIT 1', UUID, (function(_this) {
         return function(err, data) {
           _this.closeConnection(client);
           return callback(err, data);
@@ -112,7 +112,7 @@
       console.log('-------- findActiveCustomer --------', params);
       UUID = params['UUID'] || my.createHash('b0fc4601-14a6-43a1-abcd-cb9cfddb4013');
       client = this.getConnection();
-      return client.query('SELECT stores.name AS storeName, salesText, categories.name AS categoryName FROM stores LEFT JOIN infomations ON stores.id = infomations.storeID LEFT JOIN categories ON stores.categoryID = categories.id WHERE stores.UUID = ? ORDER BY infomations.id DESC LIMIT 1', UUID, (function(_this) {
+      return client.query('SELECT stores.name AS storeName, salesText, categories.name AS categoryName FROM stores LEFT JOIN infomations ON stores.UUID = infomations.UUID LEFT JOIN categories ON stores.categoryID = categories.id WHERE stores.UUID = ? ORDER BY infomations.id DESC LIMIT 1', UUID, (function(_this) {
         return function(err, data) {
           _this.closeConnection(client);
           return callback(err, data);
