@@ -57,6 +57,8 @@ app.get('/partials/:name', routes.partials);
 app.get('/api/name', api.name);
 app.get('/api/init', api.init);
 app.get('/api/findStoreInfo/:UUID', api.findStoreInfo);
+app.get('/api/notifyActiveCustomer/:UUID/:deveceIDHashed', api.notifyActiveCustomer);
+// app.get('/api/notifyActiveCustomer/', api.notifyActiveCustomer);
 
 // redirect all others to the index (HTML5 history)
 app.get('*', routes.index);

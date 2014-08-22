@@ -22,6 +22,12 @@ angular.module('myApp.controllers', [])
         console.log(data);
       });
   }])
+  .controller('ActiveTestCtrl', ['$scope', 'ClientService', function ($scope, ClientService) {
+    console.log("ActiveTestCtrl Controll");
+
+    // アクティブユーザの追加
+    ClientService.notifyActiveCustomer();
+  }])
   .controller('SignUpCtrl', function ($scope, $http, $location) {
     $scope.form = {};
     $scope.submitPost = function () {
