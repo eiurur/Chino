@@ -1,4 +1,5 @@
 var dir            = '../data/lib/'
+  , crypto         = require('crypto')
   , moment         = require('moment')
   , _              = require('lodash')
   , my             = require(dir + 'my').my
@@ -22,6 +23,23 @@ exports.findStoreInfo = function(req, res) {
     res.json({
       data: data
     });
+  });
+};
+
+exports.notifyActiveCustomer = function(req, res) {
+
+  var UUID           = req.params.UUID
+    , deviceIDHashed = req.params.deviceIDHashed
+    ;
+
+  ClientProvider.notifyActiveCustomer({
+      UUID: UUID
+    , deviceIDHashed: deviceIDHashed
+  }, function(err) {
+    console.log("--------- notifyActiveCustomer --------");
+    if(err) {
+      console.log(err);
+    }
   });
 };
 

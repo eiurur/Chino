@@ -1,5 +1,6 @@
 util   = require 'util'
 moment = require 'moment'
+crypto = require 'crypto'
 
 my = ->
 
@@ -68,5 +69,10 @@ my = ->
   isSameDay: (startTimeYMD, endTimeYMD) ->
     if startTimeYMD is endTimeYMD then true else false
 
+
+  # ハッシュ化
+  createHash: (key, algorithm) ->
+    algorithm = algorithm or "sha256"
+    crypto.createHash(algorithm).update(key).digest "hex"
 
 exports.my = my()

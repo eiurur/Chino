@@ -1,9 +1,11 @@
 (function() {
-  var moment, my, util;
+  var crypto, moment, my, util;
 
   util = require('util');
 
   moment = require('moment');
+
+  crypto = require('crypto');
 
   my = function() {
     return {
@@ -78,6 +80,10 @@
         } else {
           return false;
         }
+      },
+      createHash: function(key, algorithm) {
+        algorithm = algorithm || "sha256";
+        return crypto.createHash(algorithm).update(key).digest("hex");
       }
     };
   };
