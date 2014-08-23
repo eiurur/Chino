@@ -118,9 +118,9 @@
 
     ClientProvider.prototype.getActiveCustomerCount = function(params, callback) {
       var UUID, sql;
-      console.log('-------- getActiveCustomer --------', params);
+      console.log('-------- getActiveCustomer --------\n', params);
       sql = 'SELECT count(UUID) AS activeCustomerCount FROM actives WHERE UUID = ?';
-      UUID = params['UUID'] || my.createHash('b0fc4601-14a6-43a1-abcd-cb9cfddb4013');
+      UUID = params['UUID'] || my.createHash('b0fc460-14a6-43a1-abcd-cb9cfddb4013');
       return this.executeSQL(sql, UUID, callback);
     };
 

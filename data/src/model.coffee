@@ -149,14 +149,14 @@ class ClientProvider
 
   # 現在店舗内にいる買い物客の人数を返す
   getActiveCustomerCount: (params, callback) ->
-    console.log '-------- getActiveCustomer --------', params
+    console.log '-------- getActiveCustomer --------\n', params
 
     # TODO: 10秒以内
     sql = 'SELECT count(UUID) AS activeCustomerCount
     FROM actives WHERE UUID = ?'
 
     UUID = params['UUID'] ||
-           my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
+           my.createHash 'b0fc460-14a6-43a1-abcd-cb9cfddb4013'
 
     @executeSQL sql, UUID, callback
 

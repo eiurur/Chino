@@ -62,11 +62,14 @@ exports.getActiveCustomerCount = function(req, res) {
 
   ClientProvider.getActiveCustomerCount({
     UUID: UUID
-  }, function(err) {
+  }, function(err, data) {
     console.log("--------- getActiveCustomerCount --------");
     if(err) {
       console.log(err);
     }
+    res.json({
+      data: data
+    });
   });
 };
 
