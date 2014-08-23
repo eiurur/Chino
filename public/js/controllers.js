@@ -28,6 +28,12 @@ angular.module('myApp.controllers', [])
     // アクティブユーザの追加
     ClientService.notifyActiveCustomer();
   }])
+  .controller('GetActiveCtrl', ['$scope', 'ClientService', function ($scope, ClientService) {
+    console.log("GetActiveCtrl Controll");
+
+    // アクティブユーザの取得
+    ClientService.getActiveCustomerCount();
+  }])
   .controller('SignUpCtrl', function ($scope, $http, $location) {
     $scope.form = {};
     $scope.submitPost = function () {

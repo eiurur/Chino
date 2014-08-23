@@ -31,11 +31,22 @@ class ClientProvider
     client.end()
 
 
+  # SQL文実行
+  executeSQL: (sql, param, callback) ->
+    client = @getConnection()
+    client.query sql, param,  (err, data) =>
+      @closeConnection client
+      callback err, data if callback?
+      return
+
+
   ##
   # テストデータ格納用
   # あとで消す
   ##
   insertStoreTestData: (callback) ->
+
+    sql = 'INSERT INTO stores SET ?'
 
     nowDate = moment().format('YYYY-MM-DD HH:mm:dd')
     store =
@@ -49,29 +60,29 @@ class ClientProvider
       createdAt: nowDate
       updatedAt: nowDate
 
-    client = @getConnection()
-    client.query 'INSERT INTO stores SET ?', store, (err, data) =>
-      @closeConnection client
-      return
+    @executeSQL sql, store, callback
 
 
   insertCategoryTestData: (callback) ->
 
-    nowDate = moment().format('YYYY-MM-DD HH:mm:dd')
-    category =
-      id: 1
-      name: '飲食店'
+    sql = 'INSERT INTO categories (id, name) VALUES ?'
 
-    client = @getConnection()
-    client.query 'INSERT INTO categories SET ?', category, (err, data) =>
-      @closeConnection client
-      callback err, data
+    categories = [
+      [1, 'ファッション']
+      [2, 'グッズ']
+      [3, 'フード']
+      [4, '食料品']
+      [5, '雑貨']
+      [6, '家具・インテリア']
+      [7, 'サービス']
+      [8, 'その他']
+    ]
+
+    @executeSQL sql, [categories], callback
 
 
   insertInfomationTestData: (callback) ->
-
-
-    console.log my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
+    sql = 'INSERT INTO infomations SET ?'
 
     nowDate = moment().format('YYYY-MM-DD HH:mm:dd')
     infomation =
@@ -81,87 +92,107 @@ class ClientProvider
       createdAt: nowDate
       updatedAt: nowDate
 
-    client = @getConnection()
-    client.query 'INSERT INTO infomations SET ?', infomation, (err, data) =>
-      @closeConnection client
-      return
+    @executeSQL sql, infomation, callback
 
+
+  insertActiveTestData: (callback) ->
+    sql = 'INSERT INTO actives SET ?'
+
+    nowDate = moment().format('YYYY-MM-DD HH:mm:dd')
+    active =
+      UUID: my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
+      deviceIDHashed: 'testtesttest'
+      createdAt: nowDate
+      updatedAt: nowDate
+
+    @executeSQL sql, active, callback
 
   # 店舗名、セールステキスト、カテゴリ名を返す
   findStoreInfo: (params, callback) ->
     console.log '-------- findStoreInfo --------', params
 
-    UUID = params['UUID'] ||
-           my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
-    client = @getConnection()
-    client.query 'SELECT stores.name AS storeName, salesText,
+    sql = 'SELECT stores.name AS storeName, salesText,
     categories.name AS categoryName
-    FROM stores LEFT JOIN infomations ON stores.UUID = infomations.UUID
+    FROM stores
+    LEFT JOIN infomations ON stores.UUID = infomations.UUID
     LEFT JOIN categories ON stores.categoryID = categories.id
     WHERE stores.UUID = ?
-    ORDER BY infomations.id DESC LIMIT 1', UUID,  (err, data) =>
-      @closeConnection client
-      callback err, data
+    ORDER BY infomations.id DESC
+    LIMIT 1'
+
+    UUID = params['UUID'] ||
+           my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
+
+    @executeSQL sql, UUID, callback
 
 
   # 未完成
-  #　店舗名、詳細情報、URL、カテゴリ名、
+  #　店舗名、セールステキスト、詳細情報、URL、カテゴリ名、情報の作成日時・更新日時
   findStoreDetail: (params, callback) ->
+    console.log '-------- findStoreDetail --------', params
 
-
-  # 未完成
-  # 現在店舗内にいる買い物客の人数を返す
-  findActiveCustomer: (params, callback) ->
-    console.log '-------- findActiveCustomer --------', params
+    sql = 'SELECT stores.name AS storeName, salesText, detailText, url,
+    categories.name AS categoryName,
+    infomations.createdAt, infomations.updatedAt
+    FROM stores
+    LEFT JOIN infomations ON stores.UUID = infomations.UUID
+    LEFT JOIN categories ON stores.categoryID = categories.id
+    WHERE stores.UUID = ?
+    ORDER BY infomations.id DESC
+    LIMIT 1'
 
     UUID = params['UUID'] ||
            my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
 
-    client = @getConnection()
-    client.query 'SELECT stores.name AS storeName, salesText,
-    categories.name AS categoryName
-    FROM stores LEFT JOIN infomations ON stores.UUID = infomations.UUID
-    LEFT JOIN categories ON stores.categoryID = categories.id
-    WHERE stores.UUID = ?
-    ORDER BY infomations.id DESC LIMIT 1', UUID,  (err, data) =>
-      @closeConnection client
-      callback err, data
+    @executeSQL sql, UUID, callback
+
+
+  # 現在店舗内にいる買い物客の人数を返す
+  getActiveCustomerCount: (params, callback) ->
+    console.log '-------- getActiveCustomer --------', params
+
+    # TODO: 10秒以内
+    sql = 'SELECT count(UUID) AS activeCustomerCount
+    FROM actives WHERE UUID = ?'
+
+    UUID = params['UUID'] ||
+           my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
+
+    @executeSQL sql, UUID, callback
 
 
   # URLから直打ち、またはtelnet,sshからの不正なリクエストかどうか判定
   isValidRequest: (params, callback) ->
     console.log '-------- isValidRequest --------', params
 
-    UUIDHashed = params['UUIDHashed']
-    client = @getConnection()
-    client.query 'SELECT count(*)
-    FROM stores WHERE UUIDHashed = ?', UUIDHashed,  (err, data) =>
-      @closeConnection client
-      callback err, data
+    sql = 'SELECT count(*) FROM stores WHERE UUID = ?'
+
+    UUID = params['UUID']
+
+    @executeSQL sql, UUID, callback
+
+    # UUIDHashed = params['UUIDHashed']
 
 
   # ユーザが店舗のBeacon信号を検知したこと(店舗前に通りかかる、入店、在店)をデータベースに通知(保存)
   notifyActiveCustomer: (params, callback) ->
     console.log '-------- notifyActiveCustomer --------', params
 
+    nowDate = moment().format('YYYY-MM-DD HH:mm:dd')
+    sql = "INSERT INTO actives SET ? ON DUPLICATE KEY updatedAt = #{nowDate}"
+
     UUID           = params['UUID'] ||
                      my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
     deviceIDHashed = params['deviceIDHashed']
-    nowDate        = moment().format('YYYY-MM-DD HH:mm:dd')
     active =
       UUID: UUID
       deviceIDHashed: deviceIDHashed
       createdAt: nowDate
       updatedAt: nowDate
 
-    client = @getConnection()
-    client.query "INSERT INTO actives SET ?
-    ON DUPLICATE KEY updatedAt = #{nowDate}", active, (err, data) =>
-      @closeConnection client
-      return
+    @executeSQL sql, active, callback
 
-      callback err, data
-
+  #
 
 
 

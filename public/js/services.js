@@ -12,14 +12,22 @@ angular.module('myApp.services', [])
       },
 
       findStoreInfo: function(UUID) {
-        // var UUID = UUID || 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
         console.log("service.js findStoreInfo = " + UUID);
         return $http.get('/api/findStoreInfo/' + UUID);
       },
 
+      findStoreDetail: function(UUID) {
+        return $http.get('/api/findStoreDetail/' + UUID);
+      },
+
       notifyActiveCustomer: function(UUID, deviceIDHashed) {
         return $http.get('/api/notifyActiveCustomer/' + UUID + '/' + deviceIDHashed);
+      },
+
+      getActiveCustomerCount: function(UUID) {
+        return $http.get('/api/getActiveCustomerCount/' + UUID);
       }
+
     };
 
   });

@@ -35,8 +35,22 @@
       return client.end();
     };
 
+    ClientProvider.prototype.executeSQL = function(sql, param, callback) {
+      var client;
+      client = this.getConnection();
+      return client.query(sql, param, (function(_this) {
+        return function(err, data) {
+          _this.closeConnection(client);
+          if (callback != null) {
+            callback(err, data);
+          }
+        };
+      })(this));
+    };
+
     ClientProvider.prototype.insertStoreTestData = function(callback) {
-      var client, nowDate, store;
+      var nowDate, sql, store;
+      sql = 'INSERT INTO stores SET ?';
       nowDate = moment().format('YYYY-MM-DD HH:mm:dd');
       store = {
         id: 'test',
@@ -49,33 +63,19 @@
         createdAt: nowDate,
         updatedAt: nowDate
       };
-      client = this.getConnection();
-      return client.query('INSERT INTO stores SET ?', store, (function(_this) {
-        return function(err, data) {
-          _this.closeConnection(client);
-        };
-      })(this));
+      return this.executeSQL(sql, store, callback);
     };
 
     ClientProvider.prototype.insertCategoryTestData = function(callback) {
-      var category, client, nowDate;
-      nowDate = moment().format('YYYY-MM-DD HH:mm:dd');
-      category = {
-        id: 1,
-        name: '飲食店'
-      };
-      client = this.getConnection();
-      return client.query('INSERT INTO categories SET ?', category, (function(_this) {
-        return function(err, data) {
-          _this.closeConnection(client);
-          return callback(err, data);
-        };
-      })(this));
+      var categories, sql;
+      sql = 'INSERT INTO categories (id, name) VALUES ?';
+      categories = [[1, 'ファッション'], [2, 'グッズ'], [3, 'フード'], [4, '食料品'], [5, '雑貨'], [6, '家具・インテリア'], [7, 'サービス'], [8, 'その他']];
+      return this.executeSQL(sql, [categories], callback);
     };
 
     ClientProvider.prototype.insertInfomationTestData = function(callback) {
-      var client, infomation, nowDate;
-      console.log(my.createHash('b0fc4601-14a6-43a1-abcd-cb9cfddb4013'));
+      var infomation, nowDate, sql;
+      sql = 'INSERT INTO infomations SET ?';
       nowDate = moment().format('YYYY-MM-DD HH:mm:dd');
       infomation = {
         UUID: my.createHash('b0fc4601-14a6-43a1-abcd-cb9cfddb4013'),
@@ -84,75 +84,68 @@
         createdAt: nowDate,
         updatedAt: nowDate
       };
-      client = this.getConnection();
-      return client.query('INSERT INTO infomations SET ?', infomation, (function(_this) {
-        return function(err, data) {
-          _this.closeConnection(client);
-        };
-      })(this));
+      return this.executeSQL(sql, infomation, callback);
+    };
+
+    ClientProvider.prototype.insertActiveTestData = function(callback) {
+      var active, nowDate, sql;
+      sql = 'INSERT INTO actives SET ?';
+      nowDate = moment().format('YYYY-MM-DD HH:mm:dd');
+      active = {
+        UUID: my.createHash('b0fc4601-14a6-43a1-abcd-cb9cfddb4013'),
+        deviceIDHashed: 'testtesttest',
+        createdAt: nowDate,
+        updatedAt: nowDate
+      };
+      return this.executeSQL(sql, active, callback);
     };
 
     ClientProvider.prototype.findStoreInfo = function(params, callback) {
-      var UUID, client;
+      var UUID, sql;
       console.log('-------- findStoreInfo --------', params);
+      sql = 'SELECT stores.name AS storeName, salesText, categories.name AS categoryName FROM stores LEFT JOIN infomations ON stores.UUID = infomations.UUID LEFT JOIN categories ON stores.categoryID = categories.id WHERE stores.UUID = ? ORDER BY infomations.id DESC LIMIT 1';
       UUID = params['UUID'] || my.createHash('b0fc4601-14a6-43a1-abcd-cb9cfddb4013');
-      client = this.getConnection();
-      return client.query('SELECT stores.name AS storeName, salesText, categories.name AS categoryName FROM stores LEFT JOIN infomations ON stores.UUID = infomations.UUID LEFT JOIN categories ON stores.categoryID = categories.id WHERE stores.UUID = ? ORDER BY infomations.id DESC LIMIT 1', UUID, (function(_this) {
-        return function(err, data) {
-          _this.closeConnection(client);
-          return callback(err, data);
-        };
-      })(this));
+      return this.executeSQL(sql, UUID, callback);
     };
 
-    ClientProvider.prototype.findStoreDetail = function(params, callback) {};
-
-    ClientProvider.prototype.findActiveCustomer = function(params, callback) {
-      var UUID, client;
-      console.log('-------- findActiveCustomer --------', params);
+    ClientProvider.prototype.findStoreDetail = function(params, callback) {
+      var UUID, sql;
+      console.log('-------- findStoreDetail --------', params);
+      sql = 'SELECT stores.name AS storeName, salesText, detailText, url, categories.name AS categoryName, infomations.createdAt, infomations.updatedAt FROM stores LEFT JOIN infomations ON stores.UUID = infomations.UUID LEFT JOIN categories ON stores.categoryID = categories.id WHERE stores.UUID = ? ORDER BY infomations.id DESC LIMIT 1';
       UUID = params['UUID'] || my.createHash('b0fc4601-14a6-43a1-abcd-cb9cfddb4013');
-      client = this.getConnection();
-      return client.query('SELECT stores.name AS storeName, salesText, categories.name AS categoryName FROM stores LEFT JOIN infomations ON stores.UUID = infomations.UUID LEFT JOIN categories ON stores.categoryID = categories.id WHERE stores.UUID = ? ORDER BY infomations.id DESC LIMIT 1', UUID, (function(_this) {
-        return function(err, data) {
-          _this.closeConnection(client);
-          return callback(err, data);
-        };
-      })(this));
+      return this.executeSQL(sql, UUID, callback);
+    };
+
+    ClientProvider.prototype.getActiveCustomerCount = function(params, callback) {
+      var UUID, sql;
+      console.log('-------- getActiveCustomer --------', params);
+      sql = 'SELECT count(UUID) AS activeCustomerCount FROM actives WHERE UUID = ?';
+      UUID = params['UUID'] || my.createHash('b0fc4601-14a6-43a1-abcd-cb9cfddb4013');
+      return this.executeSQL(sql, UUID, callback);
     };
 
     ClientProvider.prototype.isValidRequest = function(params, callback) {
-      var UUIDHashed, client;
+      var UUID, sql;
       console.log('-------- isValidRequest --------', params);
-      UUIDHashed = params['UUIDHashed'];
-      client = this.getConnection();
-      return client.query('SELECT count(*) FROM stores WHERE UUIDHashed = ?', UUIDHashed, (function(_this) {
-        return function(err, data) {
-          _this.closeConnection(client);
-          return callback(err, data);
-        };
-      })(this));
+      sql = 'SELECT count(*) FROM stores WHERE UUID = ?';
+      UUID = params['UUID'];
+      return this.executeSQL(sql, UUID, callback);
     };
 
     ClientProvider.prototype.notifyActiveCustomer = function(params, callback) {
-      var UUID, active, client, deviceIDHashed, nowDate;
+      var UUID, active, deviceIDHashed, nowDate, sql;
       console.log('-------- notifyActiveCustomer --------', params);
+      nowDate = moment().format('YYYY-MM-DD HH:mm:dd');
+      sql = "INSERT INTO actives SET ? ON DUPLICATE KEY updatedAt = " + nowDate;
       UUID = params['UUID'] || my.createHash('b0fc4601-14a6-43a1-abcd-cb9cfddb4013');
       deviceIDHashed = params['deviceIDHashed'];
-      nowDate = moment().format('YYYY-MM-DD HH:mm:dd');
       active = {
         UUID: UUID,
         deviceIDHashed: deviceIDHashed,
         createdAt: nowDate,
         updatedAt: nowDate
       };
-      client = this.getConnection();
-      return client.query("INSERT INTO actives SET ? ON DUPLICATE KEY updatedAt = " + nowDate, active, (function(_this) {
-        return function(err, data) {
-          _this.closeConnection(client);
-          return;
-          return callback(err, data);
-        };
-      })(this));
+      return this.executeSQL(sql, active, callback);
     };
 
     return ClientProvider;

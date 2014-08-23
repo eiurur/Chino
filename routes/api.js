@@ -6,12 +6,8 @@ var dir            = '../data/lib/'
   , ClientProvider = require(dir + 'model').ClientProvider
   ;
 
-exports.name = function (req, res) {
-  res.json({
-    name: 'Bob'
-  });
-};
 
+// プッシュ通知用のセールステキストを返す
 exports.findStoreInfo = function(req, res) {
 
   var UUID = req.params.UUID;
@@ -26,6 +22,22 @@ exports.findStoreInfo = function(req, res) {
   });
 };
 
+// プッシュ通知用のセールステキストを返す
+exports.findStoreDetail = function(req, res) {
+
+  var UUID = req.params.UUID;
+
+  ClientProvider.findStoreDetail({
+    UUID: UUID
+  }, function(err, data) {
+    console.log("--------- findStoreDetail --------");
+    res.json({
+      data: data
+    });
+  });
+};
+
+// アクティブユーザをデータベースへ通知(保存、更新)
 exports.notifyActiveCustomer = function(req, res) {
 
   var UUID           = req.params.UUID
@@ -43,6 +55,22 @@ exports.notifyActiveCustomer = function(req, res) {
   });
 };
 
+//
+exports.getActiveCustomerCount = function(req, res) {
+
+  var UUID = req.params.UUID;
+
+  ClientProvider.getActiveCustomerCount({
+    UUID: UUID
+  }, function(err) {
+    console.log("--------- getActiveCustomerCount --------");
+    if(err) {
+      console.log(err);
+    }
+  });
+};
+
+// テストデータの追加
 exports.init = function(req, res) {
 
   my.c('init');
@@ -68,9 +96,11 @@ exports.init = function(req, res) {
     }
   });
 
-
-  res.json({
-    status: 'ok'
+  ClientProvider.insertActiveTestData(function(err) {
+    console.log('--------- insertActiveTestData --------');
+    if(err) {
+      console.log(err);
+    }
   });
 
 };

@@ -11,7 +11,6 @@ var express        = require('express')
   , api            = require('./routes/api')
   , http           = require('http')
   , path           = require('path')
-  // , newrelic       = require('newrelic')
   ;
 
 var app = module.exports = express();
@@ -54,10 +53,11 @@ app.get('/', routes.index);
 app.get('/partials/:name', routes.partials);
 
 // JSON API
-app.get('/api/name', api.name);
 app.get('/api/init', api.init);
 app.get('/api/findStoreInfo/:UUID', api.findStoreInfo);
+app.get('/api/findStoreDetail/:UUID', api.findStoreDetail);
 app.get('/api/notifyActiveCustomer/:UUID/:deveceIDHashed', api.notifyActiveCustomer);
+app.get('/api/getActiveCustomerCount/:UUID', api.getActiveCustomerCount);
 // app.get('/api/notifyActiveCustomer/', api.notifyActiveCustomer);
 
 // redirect all others to the index (HTML5 history)
