@@ -56,7 +56,7 @@ app.get('/partials/:name', routes.partials);
 app.get('/api/init', api.init);
 app.get('/api/findStoreInfo/:UUID', api.findStoreInfo);
 app.get('/api/findStoreDetail/:UUID', api.findStoreDetail);
-app.get('/api/notifyActiveCustomer/:UUID/:deveceIDHashed', api.notifyActiveCustomer);
+app.get('/api/notifyActiveCustomer/:UUID/:deviceID', api.notifyActiveCustomer);
 app.get('/api/getActiveCustomerCount/:UUID', api.getActiveCustomerCount);
 // app.get('/api/notifyActiveCustomer/', api.notifyActiveCustomer);
 

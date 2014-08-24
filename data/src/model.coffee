@@ -48,7 +48,7 @@ class ClientProvider
 
     sql = 'INSERT INTO stores SET ?'
 
-    nowDate = moment().format('YYYY-MM-DD HH:mm:dd')
+    nowDate = moment().format('YYYY-MM-DD HH:mm:ss')
     store =
       id: 'test'
       email: 'test@gmail.com'
@@ -84,7 +84,7 @@ class ClientProvider
   insertInfomationTestData: (callback) ->
     sql = 'INSERT INTO infomations SET ?'
 
-    nowDate = moment().format('YYYY-MM-DD HH:mm:dd')
+    nowDate = moment().format('YYYY-MM-DD HH:mm:ss')
     infomation =
       UUID: my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
       salesText: '(*´人｀*)'
@@ -96,16 +96,19 @@ class ClientProvider
 
 
   insertActiveTestData: (callback) ->
-    sql = 'INSERT INTO actives SET ?'
 
-    nowDate = moment().format('YYYY-MM-DD HH:mm:dd')
+    nowDate = moment().format('YYYY-MM-DD HH:mm:ss')
     active =
       UUID: my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
-      deviceIDHashed: 'testtesttest'
+      deviceID: 'testtesttest'
       createdAt: nowDate
       updatedAt: nowDate
 
+    sql = "INSERT INTO actives SET ?
+    ON DUPLICATE KEY update updatedAt = '#{nowDate}'"
+
     @executeSQL sql, active, callback
+
 
   # 店舗名、セールステキスト、カテゴリ名を返す
   findStoreInfo: (params, callback) ->
@@ -171,24 +174,23 @@ class ClientProvider
 
     @executeSQL sql, UUID, callback
 
-    # UUIDHashed = params['UUIDHashed']
-
 
   # ユーザが店舗のBeacon信号を検知したこと(店舗前に通りかかる、入店、在店)をデータベースに通知(保存)
   notifyActiveCustomer: (params, callback) ->
     console.log '-------- notifyActiveCustomer --------', params
 
-    nowDate = moment().format('YYYY-MM-DD HH:mm:dd')
-    sql = "INSERT INTO actives SET ? ON DUPLICATE KEY updatedAt = #{nowDate}"
-
-    UUID           = params['UUID'] ||
-                     my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
-    deviceIDHashed = params['deviceIDHashed']
+    nowDate  = moment().format('YYYY-MM-DD HH:mm:ss')
+    UUID     = params['UUID'] ||
+               my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
+    deviceID = params['deviceID']
     active =
       UUID: UUID
-      deviceIDHashed: deviceIDHashed
+      deviceID: deviceID
       createdAt: nowDate
       updatedAt: nowDate
+
+    sql = "INSERT INTO actives SET ?
+    ON DUPLICATE KEY update updatedAt = '#{nowDate}'"
 
     @executeSQL sql, active, callback
 

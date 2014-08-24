@@ -51,7 +51,7 @@
     ClientProvider.prototype.insertStoreTestData = function(callback) {
       var nowDate, sql, store;
       sql = 'INSERT INTO stores SET ?';
-      nowDate = moment().format('YYYY-MM-DD HH:mm:dd');
+      nowDate = moment().format('YYYY-MM-DD HH:mm:ss');
       store = {
         id: 'test',
         email: 'test@gmail.com',
@@ -76,7 +76,7 @@
     ClientProvider.prototype.insertInfomationTestData = function(callback) {
       var infomation, nowDate, sql;
       sql = 'INSERT INTO infomations SET ?';
-      nowDate = moment().format('YYYY-MM-DD HH:mm:dd');
+      nowDate = moment().format('YYYY-MM-DD HH:mm:ss');
       infomation = {
         UUID: my.createHash('b0fc4601-14a6-43a1-abcd-cb9cfddb4013'),
         salesText: '(*´人｀*)',
@@ -89,14 +89,14 @@
 
     ClientProvider.prototype.insertActiveTestData = function(callback) {
       var active, nowDate, sql;
-      sql = 'INSERT INTO actives SET ?';
-      nowDate = moment().format('YYYY-MM-DD HH:mm:dd');
+      nowDate = moment().format('YYYY-MM-DD HH:mm:ss');
       active = {
         UUID: my.createHash('b0fc4601-14a6-43a1-abcd-cb9cfddb4013'),
-        deviceIDHashed: 'testtesttest',
+        deviceID: 'testtesttest',
         createdAt: nowDate,
         updatedAt: nowDate
       };
+      sql = "INSERT INTO actives SET ? ON DUPLICATE KEY update updatedAt = '" + nowDate + "'";
       return this.executeSQL(sql, active, callback);
     };
 
@@ -133,18 +133,18 @@
     };
 
     ClientProvider.prototype.notifyActiveCustomer = function(params, callback) {
-      var UUID, active, deviceIDHashed, nowDate, sql;
+      var UUID, active, deviceID, nowDate, sql;
       console.log('-------- notifyActiveCustomer --------', params);
-      nowDate = moment().format('YYYY-MM-DD HH:mm:dd');
-      sql = "INSERT INTO actives SET ? ON DUPLICATE KEY updatedAt = " + nowDate;
+      nowDate = moment().format('YYYY-MM-DD HH:mm:ss');
       UUID = params['UUID'] || my.createHash('b0fc4601-14a6-43a1-abcd-cb9cfddb4013');
-      deviceIDHashed = params['deviceIDHashed'];
+      deviceID = params['deviceID'];
       active = {
         UUID: UUID,
-        deviceIDHashed: deviceIDHashed,
+        deviceID: deviceID,
         createdAt: nowDate,
         updatedAt: nowDate
       };
+      sql = "INSERT INTO actives SET ? ON DUPLICATE KEY update updatedAt = '" + nowDate + "'";
       return this.executeSQL(sql, active, callback);
     };
 

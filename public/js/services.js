@@ -20,8 +20,8 @@ angular.module('myApp.services', [])
         return $http.get('/api/findStoreDetail/' + UUID);
       },
 
-      notifyActiveCustomer: function(UUID, deviceIDHashed) {
-        return $http.get('/api/notifyActiveCustomer/' + UUID + '/' + deviceIDHashed);
+      notifyActiveCustomer: function(UUID, deviceID) {
+        return $http.get('/api/notifyActiveCustomer/' + UUID + '/' + deviceID);
       },
 
       getActiveCustomerCount: function(UUID) {

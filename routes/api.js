@@ -40,13 +40,13 @@ exports.findStoreDetail = function(req, res) {
 // アクティブユーザをデータベースへ通知(保存、更新)
 exports.notifyActiveCustomer = function(req, res) {
 
-  var UUID           = req.params.UUID
-    , deviceIDHashed = req.params.deviceIDHashed
+  var UUID     = req.params.UUID
+    , deviceID = req.params.deviceID
     ;
 
   ClientProvider.notifyActiveCustomer({
       UUID: UUID
-    , deviceIDHashed: deviceIDHashed
+    , deviceID: deviceID
   }, function(err) {
     console.log("--------- notifyActiveCustomer --------");
     if(err) {
@@ -55,7 +55,7 @@ exports.notifyActiveCustomer = function(req, res) {
   });
 };
 
-//
+// 現在の入店人数を返すAPIを追加
 exports.getActiveCustomerCount = function(req, res) {
 
   var UUID = req.params.UUID;
