@@ -60,18 +60,11 @@
           return moment().format("YYYY-MM-DD HH:mm:ss");
         }
       },
-      addHoursFormatYMD: function(hours, time) {
+      addSecondsFormatYMDHms: function(seconds, time) {
         if (time != null) {
-          return moment(new Date(time)).add('h', hours).format("YYYY-MM-DD");
+          return moment(new Date(time)).add(seconds, 's').format("YYYY-MM-DD HH:mm:ss");
         } else {
-          return moment().add('h', hours).format("YYYY-MM-DD");
-        }
-      },
-      addHoursFormatYMDHms: function(hours, time) {
-        if (time != null) {
-          return moment(new Date(time)).add('h', hours).format("YYYY-MM-DD HH:mm:ss");
-        } else {
-          return moment().add('h', hours).format("YYYY-MM-DD HH:mm:ss");
+          return moment().add(seconds, 's').format("YYYY-MM-DD HH:mm:ss");
         }
       },
       isSameDay: function(startTimeYMD, endTimeYMD) {

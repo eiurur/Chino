@@ -58,6 +58,7 @@ app.get('/api/findStoreInfo/:UUID', api.findStoreInfo);
 app.get('/api/findStoreDetail/:UUID', api.findStoreDetail);
 app.get('/api/notifyActiveCustomer/:UUID/:deviceID', api.notifyActiveCustomer);
 app.get('/api/getActiveCustomerCount/:UUID', api.getActiveCustomerCount);
+app.get('/api/clearActives', api.clearActives);
 // app.get('/api/notifyActiveCustomer/', api.notifyActiveCustomer);
 
 // redirect all others to the index (HTML5 history)

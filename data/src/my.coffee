@@ -51,24 +51,16 @@ my = ->
     else
       moment().format("YYYY-MM-DD HH:mm:ss")
 
-  # hours時間後の時刻をYYYY-MM-DD　の形式で返す
-  addHoursFormatYMD: (hours, time) ->
+  # second秒後の時刻をYYYY-MM-DD HH:mm:ss　の形式で返す
+  addSecondsFormatYMDHms: (seconds, time) ->
     if time?
-      moment(new Date(time)).add('h', hours).format("YYYY-MM-DD")
+      moment(new Date(time)).add(seconds, 's').format("YYYY-MM-DD HH:mm:ss")
     else
-      moment().add('h', hours).format("YYYY-MM-DD")
-
-  # hours時間後の時刻をYYYY-MM-DD HH:mm:ss　の形式で返す
-  addHoursFormatYMDHms: (hours, time) ->
-    if time?
-      moment(new Date(time)).add('h', hours).format("YYYY-MM-DD HH:mm:ss")
-    else
-      moment().add('h', hours).format("YYYY-MM-DD HH:mm:ss")
+      moment().add(seconds, 's').format("YYYY-MM-DD HH:mm:ss")
 
   # 開始時刻と終了時刻が同じ日かどうか判定
   isSameDay: (startTimeYMD, endTimeYMD) ->
     if startTimeYMD is endTimeYMD then true else false
-
 
   # ハッシュ化
   createHash: (key, algorithm) ->

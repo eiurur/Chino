@@ -2,7 +2,6 @@
 mysql       = require 'mysql'
 moment      = require 'moment'
 my          = require('./my').my
-# SHA256sum   = require('crypto').createHash('sha256')
 DB_URI      = process.env.CLEARDB_URI || ''
 DB_HOST     = process.env.DB_HOST || 'localhost'
 DB_NAME     = process.env.DB_NAME || 'cocoa'
@@ -46,11 +45,8 @@ class ClientProvider
   ##
   insertStoreTestData: (callback) ->
 
-    sql = 'INSERT INTO stores SET ?'
-
-    nowDate = moment().format('YYYY-MM-DD HH:mm:ss')
+    nowDate = my.formatYMDHms()
     store =
-      id: 'test'
       email: 'test@gmail.com'
       password: 'test'
       UUID: my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
@@ -60,12 +56,12 @@ class ClientProvider
       createdAt: nowDate
       updatedAt: nowDate
 
+    sql = 'INSERT INTO stores SET ?'
+
     @executeSQL sql, store, callback
 
 
   insertCategoryTestData: (callback) ->
-
-    sql = 'INSERT INTO categories (id, name) VALUES ?'
 
     categories = [
       [1, 'ファッション']
@@ -78,13 +74,14 @@ class ClientProvider
       [8, 'その他']
     ]
 
+    sql = 'INSERT INTO categories (id, name) VALUES ?'
+
     @executeSQL sql, [categories], callback
 
 
   insertInfomationTestData: (callback) ->
-    sql = 'INSERT INTO infomations SET ?'
 
-    nowDate = moment().format('YYYY-MM-DD HH:mm:ss')
+    nowDate = my.formatYMDHms()
     infomation =
       UUID: my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
       salesText: '(*´人｀*)'
@@ -92,12 +89,14 @@ class ClientProvider
       createdAt: nowDate
       updatedAt: nowDate
 
+    sql = 'INSERT INTO infomations SET ?'
+
     @executeSQL sql, infomation, callback
 
 
   insertActiveTestData: (callback) ->
 
-    nowDate = moment().format('YYYY-MM-DD HH:mm:ss')
+    nowDate = my.formatYMDHms()
     active =
       UUID: my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
       deviceID: 'testtesttest'
@@ -110,9 +109,15 @@ class ClientProvider
     @executeSQL sql, active, callback
 
 
+  ####### -------------------------------------------------- ########
+
+
   # 店舗名、セールステキスト、カテゴリ名を返す
   findStoreInfo: (params, callback) ->
     console.log '-------- findStoreInfo --------', params
+
+    UUID = params['UUID'] ||
+           my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
 
     sql = 'SELECT stores.name AS storeName, salesText,
     categories.name AS categoryName
@@ -123,9 +128,6 @@ class ClientProvider
     ORDER BY infomations.id DESC
     LIMIT 1'
 
-    UUID = params['UUID'] ||
-           my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
-
     @executeSQL sql, UUID, callback
 
 
@@ -133,6 +135,9 @@ class ClientProvider
   #　店舗名、セールステキスト、詳細情報、URL、カテゴリ名、情報の作成日時・更新日時
   findStoreDetail: (params, callback) ->
     console.log '-------- findStoreDetail --------', params
+
+    UUID = params['UUID'] ||
+           my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
 
     sql = 'SELECT stores.name AS storeName, salesText, detailText, url,
     categories.name AS categoryName,
@@ -144,9 +149,6 @@ class ClientProvider
     ORDER BY infomations.id DESC
     LIMIT 1'
 
-    UUID = params['UUID'] ||
-           my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
-
     @executeSQL sql, UUID, callback
 
 
@@ -154,12 +156,12 @@ class ClientProvider
   getActiveCustomerCount: (params, callback) ->
     console.log '-------- getActiveCustomer --------\n', params
 
+    UUID = params['UUID'] ||
+           my.createHash 'b0fc460-14a6-43a1-abcd-cb9cfddb4013'
+
     # TODO: 10秒以内
     sql = 'SELECT count(UUID) AS activeCustomerCount
     FROM actives WHERE UUID = ?'
-
-    UUID = params['UUID'] ||
-           my.createHash 'b0fc460-14a6-43a1-abcd-cb9cfddb4013'
 
     @executeSQL sql, UUID, callback
 
@@ -168,9 +170,9 @@ class ClientProvider
   isValidRequest: (params, callback) ->
     console.log '-------- isValidRequest --------', params
 
-    sql = 'SELECT count(*) FROM stores WHERE UUID = ?'
-
     UUID = params['UUID']
+
+    sql = 'SELECT count(*) FROM stores WHERE UUID = ?'
 
     @executeSQL sql, UUID, callback
 
@@ -179,7 +181,7 @@ class ClientProvider
   notifyActiveCustomer: (params, callback) ->
     console.log '-------- notifyActiveCustomer --------', params
 
-    nowDate  = moment().format('YYYY-MM-DD HH:mm:ss')
+    nowDate  = my.formatYMDHms()
     UUID     = params['UUID'] ||
                my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
     deviceID = params['deviceID']
@@ -194,7 +196,17 @@ class ClientProvider
 
     @executeSQL sql, active, callback
 
-  #
+
+  # 一定時間(10秒)BLEの反応が帰ってこない買い物客(退店)の入店情報を削除する
+  clearActives: (callback) ->
+    console.log '-------- clearActives --------'
+
+    dateBefore10Seconds  = my.addSecondsFormatYMDHms '-10'
+
+    sql = 'DELETE FROM actives WHERE updatedAt < ?'
+
+    @executeSQL sql, dateBefore10Seconds, callback
+
 
 
 

@@ -7,6 +7,12 @@ var dir            = '../data/lib/'
   ;
 
 
+/**
+ * TODO:
+ * ・req.paramsの正規表現で<や>が含まれてたら弾く
+ * ・画像がアップロードされたら即dropboxかAWSに保存。URLをもらってそれに置換
+ */
+
 // プッシュ通知用のセールステキストを返す
 exports.findStoreInfo = function(req, res) {
 
@@ -55,7 +61,7 @@ exports.notifyActiveCustomer = function(req, res) {
   });
 };
 
-// 現在の入店人数を返すAPIを追加
+// 現在の入店人数を返す
 exports.getActiveCustomerCount = function(req, res) {
 
   var UUID = req.params.UUID;
@@ -70,6 +76,16 @@ exports.getActiveCustomerCount = function(req, res) {
     res.json({
       data: data
     });
+  });
+};
+
+// 一定時間(10秒)BLEの反応が帰ってこない買い物客(退店)の入店情報を削除する
+exports.clearActives = function(req, res) {
+  ClientProvider.clearActives(function(err) {
+    console.log("--------- clearActives --------");
+    if(err) {
+      console.log(err);
+    }
   });
 };
 
@@ -107,3 +123,4 @@ exports.init = function(req, res) {
   });
 
 };
+

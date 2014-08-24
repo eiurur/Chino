@@ -62,14 +62,14 @@ angular.module('myApp.directives', [])
               <h1 class="text-center login-title">Sign up</h1>
               <div class="account-wall">
                   <form class="form-signin">
-                  <input type="text" class="form-control" placeholder="Email" required autofocus>
-                  <input type="password" class="form-control" placeholder="Password" required>
-                  <button class="btn btn-lg btn-primary btn-block" type="submit">
+                  <input type="text" class="form-control" placeholder="Email" required autofocus ng-model="signUp.email">
+                  <input type="password" class="form-control" placeholder="Password" required ng-model="signUp.password">
+                  <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="signUp(signUp.email, signUp.password)">
                       Sign up</button>
                   <a href="#" class="pull-right need-help">パスワードを忘れた方はこちら </a><span class="clearfix"></span>
                   </form>
               </div>
-              <a href="#" class="text-center new-account">Create an account </a>
+              <a href="/" class="text-center new-account">Create an account </a>
           </div>
         */}).toString().replace(/(\n)/g, '').split('*')[1];
 

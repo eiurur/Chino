@@ -11,15 +11,19 @@ config(function ($routeProvider, $locationProvider) {
   $routeProvider.
     when('/', {
       templateUrl: 'partials/index',
-      controller: 'MyCtrl'
+      controller: 'AdminUserCtrl'
     }).
     when('/signup', {
       templateUrl: 'partials/signup',
-      controller: 'SignUpCtrl'
+      controller: 'AdminUserCtrl'
     }).
     when('/signin', {
       templateUrl: 'partials/signin',
-      controller: 'SignInCtrl'
+      controller: 'AdminUserCtrl'
+    }).
+    when('/admin', {
+      templateUrl: 'partials/admin',
+      controller: 'AdminUserCtrl'
     }).
     when('/init', {
       templateUrl: 'partials/init',

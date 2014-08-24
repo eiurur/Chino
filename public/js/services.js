@@ -12,7 +12,6 @@ angular.module('myApp.services', [])
       },
 
       findStoreInfo: function(UUID) {
-        console.log("service.js findStoreInfo = " + UUID);
         return $http.get('/api/findStoreInfo/' + UUID);
       },
 
@@ -26,6 +25,10 @@ angular.module('myApp.services', [])
 
       getActiveCustomerCount: function(UUID) {
         return $http.get('/api/getActiveCustomerCount/' + UUID);
+      },
+
+      clearActives: function() {
+        return $http.get('/api/clearActives');
       }
 
     };

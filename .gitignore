@@ -4,3 +4,4 @@ data/node_modules/*
 data/src/development.coffee
 data/lib/development.js
 Chino-memo.md
+request-url-memo.md
