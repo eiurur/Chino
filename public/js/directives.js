@@ -19,7 +19,7 @@ angular.module('myApp.directives', [])
       }
     };
   })
-  .directive('signIn', function () {
+  .directive('signUp', function () {
     return {
       restrict: 'E',
       link: function(scope, element, attrs) {
@@ -27,7 +27,7 @@ angular.module('myApp.directives', [])
 
         tag = (function () {/*
           <div class="col-md-6">
-              <h1 class="text-center login-title">Sign in</h1>
+              <h1 class="text-center login-title">Sign up</h1>
               <div class="account-wall">
                   <img class="profile-img" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120"
                       alt="">
@@ -35,7 +35,7 @@ angular.module('myApp.directives', [])
                   <input type="text" class="form-control" placeholder="Email" required autofocus>
                   <input type="password" class="form-control" placeholder="Password" required>
                   <button class="btn btn-lg btn-primary btn-block" type="submit">
-                      Sign in</button>
+                      Sign up</button>
                   <label class="checkbox pull-left">
                       <input type="checkbox" value="remember-me">
                       Remember me
@@ -51,7 +51,7 @@ angular.module('myApp.directives', [])
       }
     };
   })
-  .directive('signUp', function () {
+  .directive('signIn', function () {
     return {
       restrict: 'E',
       link: function(scope, element, attrs) {
@@ -59,13 +59,13 @@ angular.module('myApp.directives', [])
 
         tag = (function () {/*
           <div class="col-md-6">
-              <h1 class="text-center login-title">Sign up</h1>
+              <h1 class="text-center login-title">Sign in</h1>
               <div class="account-wall">
                   <form class="form-signin">
-                  <input type="text" class="form-control" placeholder="Email" required autofocus ng-model="signUp.email">
-                  <input type="password" class="form-control" placeholder="Password" required ng-model="signUp.password">
-                  <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="signUp(signUp.email, signUp.password)">
-                      Sign up</button>
+                  <input type="text" class="form-control" placeholder="Email" required autofocus ng-model="signIn.email">
+                  <input type="password" class="form-control" placeholder="Password" required ng-model="signIn.password">
+                  <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="signIn(signIn.email, signIn.password)">
+                      Sign in</button>
                   <a href="#" class="pull-right need-help">パスワードを忘れた方はこちら </a><span class="clearfix"></span>
                   </form>
               </div>
@@ -80,5 +80,40 @@ angular.module('myApp.directives', [])
   .directive('singup', function () {
     return {
 
+    }
+  })
+  .directive('infomationLogs', function () {
+    return {
+      restrict: 'E',
+      link: function(scope, element, attrs) {
+        var tag;
+
+        tag = (function () {/*
+          <div class="list-group">
+            <a href="#" class="list-group-item active">
+              <h4 class="list-group-item-heading">List group item heading</h4>
+              <p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+            </a>
+            <a href="#" class="list-group-item">
+              <h4 class="list-group-item-heading">List group item heading</h4>
+              <p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+            </a>
+            <a href="#" class="list-group-item">
+              <h4 class="list-group-item-heading">List group item heading</h4>
+              <p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+            </a>
+            <a href="#" class="list-group-item">
+              <h4 class="list-group-item-heading">List group item heading</h4>
+              <p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+            </a>
+            <a href="#" class="list-group-item">
+              <h4 class="list-group-item-heading">List group item heading</h4>
+              <p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+            </a>
+          </div>
+        */}).toString().replace(/(\n)/g, '').split('*')[1];
+
+        element.append(tag);
+      }
     }
   });

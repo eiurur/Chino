@@ -67,4 +67,19 @@ my = ->
     algorithm = algorithm or "sha256"
     crypto.createHash(algorithm).update(key).digest "hex"
 
+  # 指定された文字列と生成したいサイズ数でユニークIDを生成
+  # http://blog.fkei.me/2012/03/nodejs-uid.html
+  createUID: (size, base) ->
+    size = size or 32
+    base = base or
+           "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    len = base.length
+    buf = []
+    i = 0
+
+    while i < size
+      buf.push base[Math.floor(Math.random() * len)]
+      ++i
+    buf.join ""
+
 exports.my = my()

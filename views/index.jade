@@ -1,16 +1,15 @@
 extends layout
 
 block body
-  .row
+  .row(ng-controller='AdminUserCtrl')
     .col-md-12
       .navbar.navbar-static-top
         .header
           .container
-            a.navbar-brand(href='/') Rize
+            a.navbar-brand.title(href='/') Chino
+            button.btn.btn-link.pull-right(ng-show='AuthenticationService.isAuthenticated', ng-click='signOut()') Sign out
 
-    .container
-      .container-fluid
-        div(ng-view)
+    div(ng-view)
 
   //- .row
   //-   .col-md-12

@@ -29,8 +29,29 @@ angular.module('myApp.services', [])
 
       clearActives: function() {
         return $http.get('/api/clearActives');
-      }
+      },
+
+      // 分ける？
+      signIn: function(email, password) {
+          return $http.post('/api/signIn', {email: email, password: password});
+      },
+      signOut: function() {
+          return $http.post('/api/signOut');
+      },
+      signUp: function(email, password) {
+          return $http.post('/api/signUp', {email: email, password: password});
+      },
+
+      isAuthenticated: function(email, password) {
+          return $http.post('/api/isAuthenticated');
+      },
 
     };
 
+  })
+  .service('AuthenticationService', function() {
+    var auth = {
+        isAuthenticated: false
+    }
+    return auth;
   });

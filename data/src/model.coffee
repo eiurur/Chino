@@ -16,7 +16,7 @@ class ClientProvider
 
   # 接続
   getConnection: ->
-    console.log DB_HOST, DB_NAME, DB_USER, DB_PASSWORD
+    # console.log DB_HOST, DB_NAME, DB_USER, DB_PASSWORD
     client = mysql.createConnection(
       host: DB_HOST
       database: DB_NAME
@@ -207,6 +207,99 @@ class ClientProvider
 
     @executeSQL sql, dateBefore10Seconds, callback
 
+
+  ##
+  # クライアントサイド?
+  ##
+
+  # 新規登録
+  signUp: (params, callback) ->
+    console.log '-------- signUp --------'
+
+    nowDate  = my.formatYMDHms()
+    email    = params['email']
+    password = params['password']
+    passwordSHA256 = my.createHash password
+    UUID = params['UUID']
+
+    store =
+      email: email
+      password: passwordSHA256
+      UUID: UUID
+      createdAt: nowDate
+      updatedAt: nowDate
+
+    sql = 'INSERT INTO stores SET ?'
+
+    @executeSQL sql, store, callback
+
+
+  # ログイン
+  signIn: (params, callback) ->
+    console.log '-------- signIn --------'
+
+    email = params['email']
+    password = params['password']
+    passwordSHA256 = my.createHash password
+
+    emailAndPass = [email, passwordSHA256]
+
+    console.log 'emailAndPAss', emailAndPass
+
+    sql = 'SELECT count(*) AS userNum, id, email
+    FROM stores
+    WHERE email = ? AND password = ?'
+
+    @executeSQL sql, emailAndPass, callback
+
+
+  #  お店の過去の宣伝内容の一覧をリストアップ
+  getLogsOfDetailText: (params, callback) ->
+    console.log '-------- getLogsOfDetailText --------'
+
+    # id = params['id']
+
+    sql = 'SELECT'
+
+    @executeSQL sql, dateBefore10Seconds, callback
+
+
+  # 宣伝内容の簡易情報、詳細情報を登録
+  registerInfomation: (params, callback) ->
+
+    infomation =
+      salesText: salesText
+      detailText: detailText
+
+    sql = 'INSERT INTO infomations SET ?'
+
+    @executeSQL sql, infomation, callback
+
+
+  deleteSessionID: (params, callback) ->
+
+    console.log '-------- deleteSessionID --------'
+
+    session_id = params['session_id']
+
+    console.log "deleteSessionID = " + session_id
+
+    sql = 'DELETE FROM sessions WHERE session_id = ?'
+
+    @executeSQL sql, session_id, callback
+
+
+  isAuthenticated: (params, callback) ->
+
+    console.log '-------- isAuthenticated --------'
+
+    session_id = params['session_id']
+
+    console.log "isAuthenticated = " + session_id
+
+    sql = 'SELECT count(*) AS userNum FROM sessions WHERE session_id = ?'
+
+    @executeSQL sql, session_id, callback
 
 
 

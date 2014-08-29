@@ -77,6 +77,19 @@
       createHash: function(key, algorithm) {
         algorithm = algorithm || "sha256";
         return crypto.createHash(algorithm).update(key).digest("hex");
+      },
+      createUID: function(size, base) {
+        var buf, i, len;
+        size = size || 32;
+        base = base || "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        len = base.length;
+        buf = [];
+        i = 0;
+        while (i < size) {
+          buf.push(base[Math.floor(Math.random() * len)]);
+          ++i;
+        }
+        return buf.join("");
       }
     };
   };

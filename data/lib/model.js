@@ -22,7 +22,6 @@
 
     ClientProvider.prototype.getConnection = function() {
       var client;
-      console.log(DB_HOST, DB_NAME, DB_USER, DB_PASSWORD);
       return client = mysql.createConnection({
         host: DB_HOST,
         database: DB_NAME,
@@ -153,6 +152,72 @@
       dateBefore10Seconds = my.addSecondsFormatYMDHms('-10');
       sql = 'DELETE FROM actives WHERE updatedAt < ?';
       return this.executeSQL(sql, dateBefore10Seconds, callback);
+    };
+
+    ClientProvider.prototype.signUp = function(params, callback) {
+      var UUID, email, nowDate, password, passwordSHA256, sql, store;
+      console.log('-------- signUp --------');
+      nowDate = my.formatYMDHms();
+      email = params['email'];
+      password = params['password'];
+      passwordSHA256 = my.createHash(password);
+      UUID = params['UUID'];
+      store = {
+        email: email,
+        password: passwordSHA256,
+        UUID: UUID,
+        createdAt: nowDate,
+        updatedAt: nowDate
+      };
+      sql = 'INSERT INTO stores SET ?';
+      return this.executeSQL(sql, store, callback);
+    };
+
+    ClientProvider.prototype.signIn = function(params, callback) {
+      var email, emailAndPass, password, passwordSHA256, sql;
+      console.log('-------- signIn --------');
+      email = params['email'];
+      password = params['password'];
+      passwordSHA256 = my.createHash(password);
+      emailAndPass = [email, passwordSHA256];
+      console.log('emailAndPAss', emailAndPass);
+      sql = 'SELECT count(*) AS userNum, id, email FROM stores WHERE email = ? AND password = ?';
+      return this.executeSQL(sql, emailAndPass, callback);
+    };
+
+    ClientProvider.prototype.getLogsOfDetailText = function(params, callback) {
+      var sql;
+      console.log('-------- getLogsOfDetailText --------');
+      sql = 'SELECT';
+      return this.executeSQL(sql, dateBefore10Seconds, callback);
+    };
+
+    ClientProvider.prototype.registerInfomation = function(params, callback) {
+      var infomation, sql;
+      infomation = {
+        salesText: salesText,
+        detailText: detailText
+      };
+      sql = 'INSERT INTO infomations SET ?';
+      return this.executeSQL(sql, infomation, callback);
+    };
+
+    ClientProvider.prototype.deleteSessionID = function(params, callback) {
+      var session_id, sql;
+      console.log('-------- deleteSessionID --------');
+      session_id = params['session_id'];
+      console.log("deleteSessionID = " + session_id);
+      sql = 'DELETE FROM sessions WHERE session_id = ?';
+      return this.executeSQL(sql, session_id, callback);
+    };
+
+    ClientProvider.prototype.isAuthenticated = function(params, callback) {
+      var session_id, sql;
+      console.log('-------- isAuthenticated --------');
+      session_id = params['session_id'];
+      console.log("isAuthenticated = " + session_id);
+      sql = 'SELECT count(*) AS userNum FROM sessions WHERE session_id = ?';
+      return this.executeSQL(sql, session_id, callback);
     };
 
     return ClientProvider;
