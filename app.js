@@ -21,27 +21,6 @@ var express        = require('express')
 
 var app = module.exports = express();
 
-var options = {
-  host: settings.DB_HOST,
-  port: 3306,
-  user: settings.DB_USER,
-  password: settings.DB_PASSWORD,
-  database: settings.DB_NAME
-};
-
-
-// 不要
-var sess = {
-  key: 'chino',
-  secret: 'rize',
-  name: 'cocoa',
-  store: new SessionStore(options),
-  proxy: true,
-  resave: true,
-  saveUninitialized: true
-};
-
-
 var env = process.env.NODE_ENV || 'development';
 
 // development only
@@ -53,15 +32,14 @@ if (env === 'development') {
 
 // production only
 if (env === 'production') {
-  app.set('trust proxy', 1) // trust first proxy
-  sess.cookie.secure = true // serve secure cookies
+  // app.set('trust proxy', 1) // trust first proxy
+  // sess.cookie.secure = true // serve secure cookies
 }
 
 
 /**
  * Configuration
  */
-
 
 // all environments
 app.set('port', process.env.PORT || 2190);
@@ -76,22 +54,16 @@ app.use(methodOverride());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use(session(sess));
-// app.use(session({
-//   secret: 'chino',
-//   saveUninitialized: true,
-//   resave: false,
-//   cookie: { maxAge: 60 * 60 * 1000 }
-// }));
-
-//// connect-redis
-// app.use(session({
-//   secret: "keyboard cat",
-//   store: new RedisStore(),
-// }));
-
+var options = {
+  host: settings.DB_HOST,
+  port: 3306,
+  user: settings.DB_USER,
+  password: settings.DB_PASSWORD,
+  database: settings.DB_NAME
+};
 
 var sesopts = {
+  key: 'chino',
   secret: 'rize',
   saveUninitialized: true,
   resave: false,
@@ -99,7 +71,6 @@ var sesopts = {
   // expressのsessionでmaxAge=nullでセッションクッキー用（ブラウザを閉じたら消える）
   cookie: {
       maxAge: 3 * 60 * 60 * 1000    // 3 hours
-    , httpOnly: false
   },
   store: new SessionStore(options)
 }
