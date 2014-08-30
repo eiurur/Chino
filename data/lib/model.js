@@ -54,9 +54,9 @@
         email: 'test@gmail.com',
         password: my.createHash('test'),
         UUID: my.createHash('b0fc4601-14a6-43a1-abcd-cb9cfddb4013'),
-        name: 'テスト',
+        name: 'Rabbit House',
         categoryID: 1,
-        url: 'http://example.com',
+        url: 'http://gochiusa.com',
         createdAt: nowDate,
         updatedAt: nowDate
       };
@@ -78,6 +78,7 @@
         UUID: my.createHash('b0fc4601-14a6-43a1-abcd-cb9cfddb4013'),
         salesText: '(*´人｀*)',
         detailText: '<p>hshs</p><img src="http://goo.gl/kvJJEM">',
+        isDraft: 0,
         createdAt: nowDate,
         updatedAt: nowDate
       };
@@ -110,7 +111,7 @@
       var UUID, sql;
       console.log('-------- findStoreDetail --------', params);
       UUID = params['UUID'] || my.createHash('b0fc4601-14a6-43a1-abcd-cb9cfddb4013');
-      sql = 'SELECT stores.name AS storeName, salesText, detailText, url, categories.name AS categoryName, infomations.createdAt, infomations.updatedAt FROM stores LEFT JOIN infomations ON stores.UUID = infomations.UUID LEFT JOIN categories ON stores.categoryID = categories.id WHERE stores.UUID = ? ORDER BY infomations.id DESC LIMIT 1';
+      sql = 'SELECT stores.name AS storeName, salesText, detailText, url, categories.name AS categoryName, infomations.createdAt, infomations.updatedAt FROM stores LEFT JOIN infomations ON stores.UUID = infomations.UUID LEFT JOIN categories ON stores.categoryID = categories.id WHERE stores.UUID = ? AND isDraft = 0 ORDER BY infomations.id DESC LIMIT 1';
       return this.executeSQL(sql, UUID, callback);
     };
 
@@ -190,7 +191,7 @@
       console.log('-------- getLogsOfInfomation --------');
       UUID = params['UUID'];
       console.log("getLogsOfInfomation UUID = ", UUID);
-      sql = 'SELECT id, salesText, detailText, createdAt, updatedAt FROM infomations WHERE UUID = ? ORDER BY infomations.id DESC';
+      sql = 'SELECT id, salesText, detailText, isDraft, createdAt, updatedAt FROM infomations WHERE UUID = ? ORDER BY infomations.id DESC';
       return this.executeSQL(sql, UUID, callback);
     };
 
@@ -213,15 +214,17 @@
     };
 
     ClientProvider.prototype.registerInfomation = function(params, callback) {
-      var UUID, detailText, infomation, nowDate, salesText, sql;
+      var UUID, detailText, infomation, isDraft, nowDate, salesText, sql;
       nowDate = my.formatYMDHms();
       UUID = params['UUID'];
       salesText = params['salesText'];
       detailText = params['detailText'];
+      isDraft = params['isDraft'];
       infomation = {
         UUID: UUID,
         salesText: salesText,
         detailText: detailText,
+        isDraft: isDraft,
         createdAt: nowDate,
         updatedAt: nowDate
       };
@@ -259,7 +262,7 @@
       var UUID, sql;
       console.log('-------- getLastInfomation --------');
       UUID = params['UUID'];
-      sql = 'SELECT id, salesText, detailText, createdAt, updatedAt FROM infomations WHERE UUID = ? ORDER BY id DESC LIMIT 1';
+      sql = 'SELECT id, salesText, detailText, isDraft, createdAt, updatedAt FROM infomations WHERE UUID = ? ORDER BY id DESC LIMIT 1';
       return this.executeSQL(sql, UUID, callback);
     };
 

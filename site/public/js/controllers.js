@@ -145,6 +145,10 @@ angular.module('myApp.controllers', ['textAngular'])
     var storeData = null;
     var UUID = null;
 
+    // 仮
+    $scope.infomationList = [];
+    $scope.isRestRegisteredStore = false;
+
 
     // データベースにセッションを問い合わせ
     ClientService.isAuthenticated()
@@ -172,8 +176,14 @@ angular.module('myApp.controllers', ['textAngular'])
             UUID = data.data.UUID;
             storeData = data.data;
 
-            $scope.storeName = data.data.name;
+            $scope.storeName = data.data.name || 'No Name';
+            $scope.isRestRegisteredStore = true;
+            if($scope.storeName === 'No Name') {
+              $scope.isRestRegisteredStore = false;
+            }
+
             $scope.storeURL = data.data.url;
+
 
 
             console.log("UserService.categories", UserService.categories);
@@ -200,9 +210,15 @@ angular.module('myApp.controllers', ['textAngular'])
               //   $scope.infomationList[$scope.infomationList.length-1] = obj;
 
               // });
+
+              if(_.isNull(data.UUID)) {
+                return;
+              }
+
               $scope.infomationList = data.data;
 
               console.log("$scope.infomations list = ", $scope.infomationList);
+              console.log("$scope.infomations list.length = ", $scope.infomationList.length);
               // $scope.infomationList = data;
             }).error(function (data, status, headers, config) {
                 // TODO
@@ -218,38 +234,6 @@ angular.module('myApp.controllers', ['textAngular'])
     });
 
     $scope.isAuthenticated = AuthenticationService.isAuthenticated;
-    // $rootScope.appUrl = "http://eiurur.sakura.ne.jp/chino";
-
-    // $scope.options = {
-    //   height: 500,
-    //   focus: true,
-    //   tabsize: 2,
-    //   styleWithSpan: false,
-
-    //   onImageUpload: function(files, editor, welEditable) {
-    //     sendFile(files[0], editor, welEditable);
-    //   }
-    // };
-
-    // function sendFile(file, editor, welEditable) {
-    //   data = new FormData();
-    //   data.append("file", file);
-    //   $.ajax({
-    //     data: data,
-    //     type: "POST",
-    //     url: $rootScope.appUrl+"/summernote",
-    //     cache: false,
-    //     contentType: false,
-    //     processData: false,
-    //     success: function(url) {
-    //       console.log('success');
-    //       editor.insertImage(welEditable, url);
-    //     },
-    //     error: function(response){
-    //       console.log('error');
-    //     }
-    //   });
-    // }
 
     $scope.registerInfomation = function() {
 
@@ -259,12 +243,30 @@ angular.module('myApp.controllers', ['textAngular'])
       console.log("storeCategory  = " + $scope.storeCategory);
       console.log("storeCategory  = ", $scope.storeCategory);
 
+
+      registerInfomation(0);
+
+    };
+
+    // 広告情報を下書きとして保存
+    $scope.draftInfomation = function() {
+      registerInfomation(1);
+    }
+
+    // TODO: Serviceに移動
+    function clearScope() {
+      $scope.salesText = '';
+      $scope.htmlVariable = '';
+    }
+
+    function registerInfomation(isDraft) {
       // TODO: serviceに追加
       // 宣伝情報をデータベースに格納
       $http.post("/api/registerInfomation", {
-          UUID: UUID,
-          salesText: $scope.salesText,
-          detailText: $scope.htmlVariable
+          UUID: UUID
+        , salesText: $scope.salesText
+        , detailText: $scope.htmlVariable
+        , isDraft: isDraft
       }).success(function (data, status, headers, config) {
 
           console.log("registerInfomation data", data);
@@ -272,32 +274,31 @@ angular.module('myApp.controllers', ['textAngular'])
 
           clearScope();
 
-          if(_.isEmpty($scope.storeName)) {
+          if(!($scope.isRestRegisteredStore)) {
 
-            // var selectedCategory = _.findWhere(UserService.categories, {name: $scope.storeCategory});
-            // console.log("updateStoreRestInfomation selectedCategory = ", selectedCategory);
-            // return;
-
+            // お店の情報を登録
             $http.post("/api/updateStoreRestInfomation", {
-                UUID: UUID,
-                name: $scope.storeName,
-                url: $scope.storeURL,
-                categoryID: $scope.storeCategory.id
+                UUID: UUID
+              , name: $scope.storeName
+              , url: $scope.storeURL
+              , categoryID: $scope.storeCategory.id
             }).success(function (data, status, headers, config) {
-                console.log("registerInfomation data", data);
+              console.log("registerInfomation data", data);
+
+              $scope.isRestRegisteredStore = true;
             }).error(function (data, status, headers, config) {
                 // TODO
             });
 
           }
 
+          // 登録した広告情報を問い合わせ、Listに格納
           $http.post('/api/getLastInfomation', {
             UUID: UUID
           }).success(function(data) {
 
             console.log("controller getLastInfomation data = ", data.data);
 
-            // pushより早い
             $scope.infomationList.push(data.data);
 
             console.log("追加後 $scope.infomations list = ", $scope.infomationList);
@@ -308,29 +309,22 @@ angular.module('myApp.controllers', ['textAngular'])
             console.log(status);
             console.log(data);
           });
+
           // 登録した宣伝情報をログのリスト配列に追加
-          $http.get('api/getLastInfomationID')
-            .success(function(data) {
-              var lastID = data.id;
+          // $http.get('api/getLastInfomationID')
+          //   .success(function(data) {
+          //     var lastID = data.id;
 
-              // 最後に
-            }).error(function(status, data) {
+          //     // 最後に
+          //   }).error(function(status, data) {
 
-              console.log(status);
-              console.log(data);
+          //     console.log(status);
+          //     console.log(data);
 
-            });
+          //   });
 
       }).error(function (data, status, headers, config) {
           // TODO
       });
-
-    };
-
-    // TODO: Serviceに移動
-    function clearScope() {
-      $scope.salesText = '';
-      $scope.htmlVariable = '';
     }
-
   }]);

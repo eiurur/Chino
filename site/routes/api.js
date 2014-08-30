@@ -1,4 +1,4 @@
-var dir            = '../data/lib/'
+var dir            = '../../data/lib/'
   , crypto         = require('crypto')
   , moment         = require('moment')
   , _              = require('lodash')
@@ -233,27 +233,6 @@ exports.signOut = function(req, res) {
       data: "ok"
   });
 
-  // ClientProvider.deleteSessionID({
-  //   session_id:  req.session.id
-  // }, function(err, data) {
-  //   console.log("--------- API sign Out --------");
-
-  //   // delete req.session.user;
-  //   // delete req.session;
-
-  //   req.session.destroy();
-
-  //   if(err) console.log(err);
-
-  //   console.log("API deleteSessionID data = ", data);
-
-  //   console.log("API delete後　signOut req.session", req.sesion);
-
-  //   res.json({
-  //       data: data
-  //   });
-  // });
-
 }
 
 exports.isAuthenticated = function(req, res) {
@@ -262,30 +241,6 @@ exports.isAuthenticated = function(req, res) {
   console.log("isAuthenticated req.session.user = ", req.session.user);
   console.log("isAuthenticated _.isUndefined(req.session.user) = ", _.isUndefined(req.session.user));
 
-
-  // ClientProvider.isAuthenticated({
-  //     session_id:  req.session.id
-  // }, function(err, data) {
-  //   console.log("--------- isAuthenticated --------");
-
-  //   if(err) console.log(err);
-
-  //   console.log("isAuthticated data = ", data);
-  //   console.log("isAuthticated data[0] = ", data[0]);
-
-  //   res.json({
-  //       data: data[0]
-  //   });
-  // });
-
-  // var data = req.session.user;
-  // if(_.isUndefined(req.session.user)) {
-  //     data =
-  // }
-
-  // res.json({
-  //   data: req.session.user
-  // });
   var sessionUserID = null;
 
   if(!_.isUndefined(req.session.user)) {
@@ -304,12 +259,14 @@ exports.registerInfomation = function(req, res) {
   var UUID  = req.body.UUID
     , salesText = req.body.salesText
     , detailText = req.body.detailText
+    , isDraft = req.body.isDraft
     ;
 
   ClientProvider.registerInfomation({
       UUID: UUID
     , salesText: salesText
     , detailText: detailText
+    , isDraft: isDraft
   }, function(err, data) {
     console.log("--------- registerInfomation --------");
 
@@ -376,7 +333,12 @@ exports.getLogsOfInfomation = function(req, res) {
     console.log("getLogsOfInfomation data", data);
 
     if(data.length === 0) {
-      data[0].UUID = null;
+      // data[0] = {
+      //   UUID: null
+      // };
+      res.json({
+        data: data
+      });
     }
 
     console.log("getLogsOfInfomation data[0]", data[0]);

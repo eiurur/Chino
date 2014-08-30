@@ -50,9 +50,9 @@ class ClientProvider
       email: 'test@gmail.com'
       password: my.createHash 'test'
       UUID: my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
-      name: 'テスト'
+      name: 'Rabbit House'
       categoryID: 1
-      url: 'http://example.com'
+      url: 'http://gochiusa.com'
       createdAt: nowDate
       updatedAt: nowDate
 
@@ -86,6 +86,7 @@ class ClientProvider
       UUID: my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
       salesText: '(*´人｀*)'
       detailText: '<p>hshs</p><img src="http://goo.gl/kvJJEM">'
+      isDraft: 0
       createdAt: nowDate
       updatedAt: nowDate
 
@@ -145,7 +146,7 @@ class ClientProvider
     FROM stores
     LEFT JOIN infomations ON stores.UUID = infomations.UUID
     LEFT JOIN categories ON stores.categoryID = categories.id
-    WHERE stores.UUID = ?
+    WHERE stores.UUID = ? AND isDraft = 0
     ORDER BY infomations.id DESC
     LIMIT 1'
 
@@ -262,7 +263,7 @@ class ClientProvider
 
     console.log "getLogsOfInfomation UUID = ", UUID
 
-    sql = 'SELECT id, salesText, detailText, createdAt, updatedAt
+    sql = 'SELECT id, salesText, detailText, isDraft, createdAt, updatedAt
     FROM infomations
     WHERE UUID = ?
     ORDER BY infomations.id DESC'
@@ -304,11 +305,13 @@ class ClientProvider
     UUID = params['UUID']
     salesText = params['salesText']
     detailText = params['detailText']
+    isDraft = params['isDraft']
 
     infomation =
       UUID: UUID
       salesText: salesText
       detailText: detailText
+      isDraft: isDraft
       createdAt: nowDate
       updatedAt: nowDate
 
@@ -356,7 +359,7 @@ class ClientProvider
 
     UUID = params['UUID']
 
-    sql = 'SELECT id, salesText, detailText, createdAt, updatedAt
+    sql = 'SELECT id, salesText, detailText, isDraft, createdAt, updatedAt
     FROM infomations
     WHERE UUID = ?
     ORDER BY id DESC
