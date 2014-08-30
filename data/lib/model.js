@@ -52,7 +52,7 @@
       nowDate = my.formatYMDHms();
       store = {
         email: 'test@gmail.com',
-        password: 'test',
+        password: my.createHash('test'),
         UUID: my.createHash('b0fc4601-14a6-43a1-abcd-cb9cfddb4013'),
         name: 'テスト',
         categoryID: 1,
@@ -185,21 +185,13 @@
       return this.executeSQL(sql, emailAndPass, callback);
     };
 
-    ClientProvider.prototype.getLogsOfDetailText = function(params, callback) {
-      var sql;
-      console.log('-------- getLogsOfDetailText --------');
-      sql = 'SELECT';
-      return this.executeSQL(sql, dateBefore10Seconds, callback);
-    };
-
-    ClientProvider.prototype.registerInfomation = function(params, callback) {
-      var infomation, sql;
-      infomation = {
-        salesText: salesText,
-        detailText: detailText
-      };
-      sql = 'INSERT INTO infomations SET ?';
-      return this.executeSQL(sql, infomation, callback);
+    ClientProvider.prototype.getLogsOfInfomation = function(params, callback) {
+      var UUID, sql;
+      console.log('-------- getLogsOfInfomation --------');
+      UUID = params['UUID'];
+      console.log("getLogsOfInfomation UUID = ", UUID);
+      sql = 'SELECT id, salesText, detailText, createdAt, updatedAt FROM infomations WHERE UUID = ? ORDER BY infomations.id DESC';
+      return this.executeSQL(sql, UUID, callback);
     };
 
     ClientProvider.prototype.deleteSessionID = function(params, callback) {
@@ -218,6 +210,57 @@
       console.log("isAuthenticated = " + session_id);
       sql = 'SELECT count(*) AS userNum FROM sessions WHERE session_id = ?';
       return this.executeSQL(sql, session_id, callback);
+    };
+
+    ClientProvider.prototype.registerInfomation = function(params, callback) {
+      var UUID, detailText, infomation, nowDate, salesText, sql;
+      nowDate = my.formatYMDHms();
+      UUID = params['UUID'];
+      salesText = params['salesText'];
+      detailText = params['detailText'];
+      infomation = {
+        UUID: UUID,
+        salesText: salesText,
+        detailText: detailText,
+        createdAt: nowDate,
+        updatedAt: nowDate
+      };
+      sql = 'INSERT INTO infomations SET ?';
+      return this.executeSQL(sql, infomation, callback);
+    };
+
+    ClientProvider.prototype.updateStoreRestInfomation = function(params, callback) {
+      var UUID, categoryID, name, nowDate, sql, store, url;
+      console.log('updateStoreRestinfomatiion = ', params);
+      nowDate = my.formatYMDHms();
+      UUID = params['UUID'];
+      name = params['name'];
+      url = params['url'];
+      categoryID = params['categoryID'];
+      store = {
+        name: name,
+        url: url,
+        categoryID: categoryID,
+        updatedAt: nowDate
+      };
+      sql = 'UPDATE stores SET ? WHERE UUID = ?';
+      return this.executeSQL(sql, [store, UUID], callback);
+    };
+
+    ClientProvider.prototype.getStoreData = function(params, callback) {
+      var sql, storeID;
+      console.log('-------- getStoreData --------');
+      storeID = params['storeID'];
+      sql = 'SELECT name, UUID, categoryID, url FROM stores WHERE id = ?';
+      return this.executeSQL(sql, storeID, callback);
+    };
+
+    ClientProvider.prototype.getLastInfomation = function(params, callback) {
+      var UUID, sql;
+      console.log('-------- getLastInfomation --------');
+      UUID = params['UUID'];
+      sql = 'SELECT id, salesText, detailText, createdAt, updatedAt FROM infomations WHERE UUID = ? ORDER BY id DESC LIMIT 1';
+      return this.executeSQL(sql, UUID, callback);
     };
 
     return ClientProvider;

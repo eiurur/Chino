@@ -41,10 +41,15 @@ angular.module('myApp.services', [])
       signUp: function(email, password) {
           return $http.post('/api/signUp', {email: email, password: password});
       },
-
       isAuthenticated: function(email, password) {
           return $http.post('/api/isAuthenticated');
       },
+      getStoreData: function(storeID) {
+        return $http.post('/api/getStoreData', {storeID: storeID});
+      },
+      getLogsOfInfomation: function(storeID) {
+        return $http.post('/api/getLogsOfInfomation', {UUID: UUID});
+      }
 
     };
 
@@ -54,4 +59,43 @@ angular.module('myApp.services', [])
         isAuthenticated: false
     }
     return auth;
+  })
+  .service('UserService', function() {
+    var items = {
+        categories: [
+          {
+              id: 1
+            , name: 'ファッション'
+          },
+          {
+              id: 2
+            , name: 'グッズ'
+          },
+          {
+              id: 3
+            , name: 'フード'
+          },
+          {
+              id: 4
+            , name: '食料品'
+          },
+          {
+              id: 5
+            , name: '雑貨'
+          },
+          {
+              id: 6
+            , name: '家具・インテリア'
+          },
+          {
+              id: 7
+            , name: 'サービス'
+          },
+          {
+              id: 8
+            , name: 'その他'
+          }
+        ]
+    };
+    return items;
   });

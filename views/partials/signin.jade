@@ -1,4 +1,15 @@
-div(ng-controller='SignInCtrl')
-  .container
-    description
-    sign-in
+//- div(ng-controller='AdminUserCtrl')
+.container
+  description
+  .col-md-6
+    h1.text-center.login-title Sign in
+    .account-wall
+      form.form-signin(name='signInForm')
+        input.form-control(type='text', placeholder='Email', required='required', ng-pattern='/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/i', autofocus='autofocus', ng-model='signIn.email')
+        input.form-control(type='password', placeholder='Password', required='required', ng-pattern='/^[a-zA-Z0-9]{3,30}$/i', ng-model='signIn.password')
+        //- input(type='hidden', name='_csrf', value='')
+        button.btn.btn-lg.btn-primary.btn-block(type='submit', ng-click='signIn(signIn.email, signIn.password)', ng-disabled="signInForm.$invalid")
+          | Sign in
+        //- a.pull-right.need-help(href='#') パスワードを忘れた方はこちら
+        span.clearfix
+    a.text-center.new-account(href='/signup') Create an account

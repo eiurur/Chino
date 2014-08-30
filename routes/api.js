@@ -55,7 +55,9 @@ exports.notifyActiveCustomer = function(req, res) {
     , deviceID: deviceID
   }, function(err) {
     console.log("--------- notifyActiveCustomer --------");
+
     var data = "ok";
+
     if(err) {
       console.log(err);
       data = "err";
@@ -222,44 +224,221 @@ exports.signOut = function(req, res) {
 
   console.log("API signOut req.session.id = " + req.session.id);
 
-  ClientProvider.deleteSessionID({
-    session_id:  req.session.id
-  }, function(err, data) {
-    console.log("--------- API sign Out --------");
 
-    // delete req.session.user;
-    delete req.session;
+  req.session.destroy();
 
-    if(err) console.log(err);
+  console.log("API delete後　signOut req.session", req.sesion);
 
-    console.log("API deleteSessionID data = ", data);
-
-    console.log("API delete後　signOut req.session", req.sesion);
-
-    res.json({
-        data: data
-    });
+  res.json({
+      data: "ok"
   });
+
+  // ClientProvider.deleteSessionID({
+  //   session_id:  req.session.id
+  // }, function(err, data) {
+  //   console.log("--------- API sign Out --------");
+
+  //   // delete req.session.user;
+  //   // delete req.session;
+
+  //   req.session.destroy();
+
+  //   if(err) console.log(err);
+
+  //   console.log("API deleteSessionID data = ", data);
+
+  //   console.log("API delete後　signOut req.session", req.sesion);
+
+  //   res.json({
+  //       data: data
+  //   });
+  // });
 
 }
 
 exports.isAuthenticated = function(req, res) {
 
   console.log("isAuthenticated req.session.id = " + req.session.id);
+  console.log("isAuthenticated req.session.user = ", req.session.user);
+  console.log("isAuthenticated _.isUndefined(req.session.user) = ", _.isUndefined(req.session.user));
 
-  ClientProvider.isAuthenticated({
-      session_id:  req.session.id
+
+  // ClientProvider.isAuthenticated({
+  //     session_id:  req.session.id
+  // }, function(err, data) {
+  //   console.log("--------- isAuthenticated --------");
+
+  //   if(err) console.log(err);
+
+  //   console.log("isAuthticated data = ", data);
+  //   console.log("isAuthticated data[0] = ", data[0]);
+
+  //   res.json({
+  //       data: data[0]
+  //   });
+  // });
+
+  // var data = req.session.user;
+  // if(_.isUndefined(req.session.user)) {
+  //     data =
+  // }
+
+  // res.json({
+  //   data: req.session.user
+  // });
+  var sessionUserID = null;
+
+  if(!_.isUndefined(req.session.user)) {
+    sessionUserID = req.session.user.id;
+  }
+  res.json({
+    data: sessionUserID
+  });
+}
+
+
+exports.registerInfomation = function(req, res) {
+
+  console.log("registerIfomation req.body = ", req.body);
+
+  var UUID  = req.body.UUID
+    , salesText = req.body.salesText
+    , detailText = req.body.detailText
+    ;
+
+  ClientProvider.registerInfomation({
+      UUID: UUID
+    , salesText: salesText
+    , detailText: detailText
   }, function(err, data) {
-    console.log("--------- isAuthenticated --------");
+    console.log("--------- registerInfomation --------");
+
+    var data = "ok";
+
+    if(err) {
+      console.log(err);
+      data = "err";
+    }
+
+    res.json({
+      data: data
+    });
+  });
+};
+
+
+exports.getStoreData = function(req, res) {
+
+  // console.log("getStoreData req = ", req);
+
+  var storeID = req.body.storeID;
+
+  ClientProvider.getStoreData({
+    storeID: storeID
+  }, function(err, data) {
+    console.log("--------- getStoreData --------");
 
     if(err) console.log(err);
 
-    console.log("isAuthticated data = ", data);
-    console.log("isAuthticated data[0] = ", data[0]);
+
+    console.log("getStoreData data", data);
+
+    if(_.isUndefined(data)) {
+
+      // dataに0なんてプロパティないですよー！って怒られるから一旦強制終了。
+      return;
+      data[0].UUID = null;
+    }
+
+    console.log("getStoreData data[0]", data[0]);
 
     res.json({
-        data: data[0]
+      data: data[0]
     });
   });
 
-}
+};
+
+
+exports.getLogsOfInfomation = function(req, res) {
+
+  // console.log("getLogsOfInfomation req = ", req);
+
+  var UUID = req.body.UUID;
+
+  ClientProvider.getLogsOfInfomation({
+    UUID: UUID
+  }, function(err, data) {
+    console.log("--------- getLogsOfInfomation --------");
+
+    if(err) console.log(err);
+
+    console.log("getLogsOfInfomation data", data);
+
+    if(data.length === 0) {
+      data[0].UUID = null;
+    }
+
+    console.log("getLogsOfInfomation data[0]", data[0]);
+
+    res.json({
+      data: data
+    });
+  });
+
+};
+
+
+exports.updateStoreRestInfomation = function(req, res) {
+
+  // この代入いらない？
+  var UUID = req.body.UUID
+    , name = req.body.name
+    , url = req.body.url
+    , categoryID = req.body.categoryID
+    ;
+
+  ClientProvider.updateStoreRestInfomation({
+      UUID: UUID
+    , name: name
+    , url: url
+    , categoryID: categoryID
+  }, function(err, data) {
+    console.log("--------- updateStoreRestInfomation --------");
+
+    if(err) console.log(err);
+
+    var data = "ok";
+
+    if(err) {
+      console.log(err);
+      data = "err";
+    }
+
+    res.json({
+      data: data
+    });
+  });
+
+};
+
+
+exports.getLastInfomation = function(req, res) {
+
+  // この代入いらない？
+  var UUID = req.body.UUID;
+
+  ClientProvider.getLastInfomation({
+      UUID: UUID
+  }, function(err, data) {
+    console.log("--------- getLastInfomation --------");
+
+    console.log("getLastInfomation data = ", data);
+    console.log("getLastInfomation data[0] = ", data[0]);
+
+    res.json({
+      data: data[0]
+    });
+  });
+
+};

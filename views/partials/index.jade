@@ -1,4 +1,49 @@
-div(ng-controller='SignUpCtrl')
-  .container
-    description
-    sign-up
+div(ng-controller='UserCtrl')
+  .container(ng-show="isAuthenticated")
+    button.btn.btn-link.pull-right(ng-click='signOut()') Sign out
+    legend {{storeName}}
+    //- h2.text-center.title
+    //-   a Chino
+    span(target='_self')
+      .col-md-6.panel-magin
+        form(role='form', name='registerForm')
+          span(ng-show='storeName==""')
+            legend 初期設定
+            .form-group
+              label(for='storeName') 店舗名
+              input#storeName.form-control(type='text', name='storeName', placeholder='Rabbit House', ng-model="storeName", required='required')
+            .form-group
+              label(for='storeURL') 店舗URL
+              input#storeName.form-control(type='text', name='storeURL', placeholder='http://example.com', ng-model="storeURL", required='required')
+            .form-group
+              label(for='storeCategory') 店舗カテゴリ
+              select.form-control(ng-options='category.name for category in categories', ng-model="storeCategory")
+            br
+          legend 宣伝情報
+          .form-group
+            label(for='salesText') セールステキスト
+            input#salesText.form-control(type='text', name='salesText', placeholder='春物新作入荷しました！！', autofocus, ng-model="salesText", required='required')
+          .form-group
+            label(for='detailText') 詳細情報
+            //- summernote(config="options", ng-model='text')
+            text-angular(ng-model="htmlVariable", required='required')
+          button#save.btn.btn-primary(type='button', ng-click='registerInfomation()', ng-disabled="registerForm.$invalid") 登録
+
+      .col-md-6.panel-magin
+        //- br
+        //- textarea(type='text', ng-model='htmlVariable', style='width:100%;')
+        //- | text : {{htmlVariable}}
+
+        //- infomation-logs
+        legend 過去の宣伝情報
+        .list-group
+          //- a.list-group-item.active(href='#')
+          a.list-group-item(href='#', ng-repeat='infomation in infomationList | orderBy: "id": true')
+            h4.list-group-item-heading {{infomation.salesText}}
+            p.list-group-item-text
+              {{infomation.createdAt}}
+
+
+
+
+

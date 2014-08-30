@@ -5,7 +5,7 @@ angular.module('myApp', [
   'myApp.services',
   'myApp.directives',
   'myApp.controllers',
-  'summernote'
+  'textAngular'
 ]).
 config(function ($routeProvider, $locationProvider) {
   $routeProvider.
@@ -53,9 +53,10 @@ config(function ($routeProvider, $locationProvider) {
     // console.log("nextRoute.requiresLogin " + nextRoute.requiresLogin);
     // console.log("nextRoute.$$route.requiresLogin " + nextRoute.$$route.requiresLogin);
     console.log("currentRoute.requiresLogin " + currentRoute.requiresLogin);
-    console.log("nextRoute ", nextRoute.$$route.requiresLogin);
+    console.log("nextRoute ", nextRoute);
+    // console.log("nextRoute.$$route ", nextRoute.$$route);
 
-    if (currentRoute.requiresLogin && nextRoute.$$route.requiresLogin !== false) {
+    if (currentRoute.requiresLogin && nextRoute && nextRoute.$$route.requiresLogin !== false) {
       if (!AuthenticationService.isAuthenticated) {
         console.log("app 中 AuthenticationService.isAuthenticated = " + AuthenticationService.isAuthenticated);
         console.log("app.js (^^ゞ) ---> /signin");

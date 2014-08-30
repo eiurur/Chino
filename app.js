@@ -122,6 +122,13 @@ app.post('/api/signIn', api.signIn);
 app.post('/api/signUp', api.signUp);
 app.post('/api/signOut', api.signOut);
 app.post('/api/isAuthenticated', api.isAuthenticated);
+app.post('/api/getStoreData', api.getStoreData);
+app.post('/api/registerInfomation', api.registerInfomation);
+app.post('/api/getLogsOfInfomation', api.getLogsOfInfomation);
+app.post('/api/getLastInfomation', api.getLastInfomation);
+
+// Question: PUTにすべき？
+app.post('/api/updateStoreRestInfomation', api.updateStoreRestInfomation);
 
 
 // redirect all others to the index (HTML5 history)

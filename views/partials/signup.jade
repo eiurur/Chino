@@ -1,4 +1,18 @@
-div(ng-controller='SignUpCtrl')
-  .container
-    description
-    sign-up
+//- div(ng-controller='AdminUserCtrl')
+.container
+  description
+  .col-md-6
+    h1.text-center.login-title Sign up
+    .account-wall
+      form.form-signin(name='signUpForm')
+        input.form-control(type='text', placeholder='メールアドレス', required='required', ng-pattern='/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/i', autofocus='autofocus', ng-model='signUp.email')
+        input.form-control(type='password', placeholder='パスワード', required='required', ng-pattern='/^[a-zA-Z0-9]{3,30}$/i', ng-model='signUp.password')
+        input.form-control(type='password', placeholder='パスワードの確認', required='required', ng-model='signUp.passwordConfirm')
+        span(ng-show="IsMatch") Emails have to match!
+        button.btn.btn-lg.btn-primary.btn-block(type='submit', ng-click='signUp(signUp.email, signUp.password, signUp.passwordConfirm)', ng-disabled="signUpForm.$invalid")
+          | Sign up
+        //- label.checkbox.pull-left
+        //-   input(type='checkbox', value='remember-me')
+        //-   | Remember me
+        //- a.pull-right.need-help(href='#') Need help?
+        span.clearfix

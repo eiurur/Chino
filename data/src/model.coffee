@@ -48,7 +48,7 @@ class ClientProvider
     nowDate = my.formatYMDHms()
     store =
       email: 'test@gmail.com'
-      password: 'test'
+      password: my.createHash 'test'
       UUID: my.createHash 'b0fc4601-14a6-43a1-abcd-cb9cfddb4013'
       name: 'テスト'
       categoryID: 1
@@ -254,26 +254,20 @@ class ClientProvider
 
 
   #  お店の過去の宣伝内容の一覧をリストアップ
-  getLogsOfDetailText: (params, callback) ->
-    console.log '-------- getLogsOfDetailText --------'
+  getLogsOfInfomation: (params, callback) ->
 
-    # id = params['id']
+    console.log '-------- getLogsOfInfomation --------'
 
-    sql = 'SELECT'
+    UUID = params['UUID']
 
-    @executeSQL sql, dateBefore10Seconds, callback
+    console.log "getLogsOfInfomation UUID = ", UUID
 
+    sql = 'SELECT id, salesText, detailText, createdAt, updatedAt
+    FROM infomations
+    WHERE UUID = ?
+    ORDER BY infomations.id DESC'
 
-  # 宣伝内容の簡易情報、詳細情報を登録
-  registerInfomation: (params, callback) ->
-
-    infomation =
-      salesText: salesText
-      detailText: detailText
-
-    sql = 'INSERT INTO infomations SET ?'
-
-    @executeSQL sql, infomation, callback
+    @executeSQL sql, UUID, callback
 
 
   deleteSessionID: (params, callback) ->
@@ -301,6 +295,74 @@ class ClientProvider
 
     @executeSQL sql, session_id, callback
 
+
+  # 宣伝内容の簡易情報、詳細情報を登録
+  registerInfomation: (params, callback) ->
+
+    nowDate  = my.formatYMDHms()
+
+    UUID = params['UUID']
+    salesText = params['salesText']
+    detailText = params['detailText']
+
+    infomation =
+      UUID: UUID
+      salesText: salesText
+      detailText: detailText
+      createdAt: nowDate
+      updatedAt: nowDate
+
+    sql = 'INSERT INTO infomations SET ?'
+
+    @executeSQL sql, infomation, callback
+
+
+  updateStoreRestInfomation: (params, callback) ->
+
+    console.log 'updateStoreRestinfomatiion = ', params
+
+    nowDate  = my.formatYMDHms()
+
+    UUID = params['UUID']
+    name = params['name']
+    url = params['url']
+    categoryID = params['categoryID']
+
+    store =
+      name: name
+      url: url
+      categoryID: categoryID
+      updatedAt: nowDate
+
+    sql = 'UPDATE stores SET ? WHERE UUID = ?'
+
+    @executeSQL sql, [store, UUID], callback
+
+
+  getStoreData: (params, callback) ->
+
+    console.log '-------- getStoreData --------'
+
+    storeID = params['storeID']
+
+    sql = 'SELECT name, UUID, categoryID, url FROM stores WHERE id = ?'
+
+    @executeSQL sql, storeID, callback
+
+
+  getLastInfomation: (params, callback) ->
+
+    console.log '-------- getLastInfomation --------'
+
+    UUID = params['UUID']
+
+    sql = 'SELECT id, salesText, detailText, createdAt, updatedAt
+    FROM infomations
+    WHERE UUID = ?
+    ORDER BY id DESC
+    LIMIT 1'
+
+    @executeSQL sql, UUID, callback
 
 
 exports.ClientProvider = new ClientProvider()
