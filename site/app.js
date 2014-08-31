@@ -126,6 +126,8 @@ exports.serve = function() {
   app.post('/api/registerInfomation', api.registerInfomation);
   app.post('/api/getLogsOfInfomation', api.getLogsOfInfomation);
   app.post('/api/getLastInfomation', api.getLastInfomation);
+  app.post('/api/updateInfomation', api.updateInfomation);
+  app.post('/api/getInfomationByInfomationID', api.getInfomationByInfomationID);
 
   // Question: PUTにすべき？
   app.post('/api/updateStoreRestInfomation', api.updateStoreRestInfomation);

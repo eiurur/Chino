@@ -266,6 +266,33 @@
       return this.executeSQL(sql, UUID, callback);
     };
 
+    ClientProvider.prototype.getInfomationByInfomationID = function(params, callback) {
+      var infomationID, sql;
+      console.log('-------- getInfomationByInfomationID --------');
+      infomationID = params['infomationID'];
+      sql = 'SELECT id, salesText, detailText, isDraft, createdAt, updatedAt FROM infomations WHERE id = ? ORDER BY id DESC LIMIT 1';
+      return this.executeSQL(sql, infomationID, callback);
+    };
+
+    ClientProvider.prototype.updateInfomation = function(params, callback) {
+      var detailText, infomation, infomationID, isDraft, nowDate, salesText, sql;
+      console.log('-------- updateInfomation --------');
+      nowDate = my.formatYMDHms();
+      infomationID = params['infomationID'];
+      salesText = params['salesText'];
+      detailText = params['detailText'];
+      isDraft = params['isDraft'];
+      infomation = {
+        id: infomationID,
+        salesText: salesText,
+        detailText: detailText,
+        isDraft: isDraft,
+        updatedAt: nowDate
+      };
+      sql = 'UPDATE infomations SET ? WHERE id = ?';
+      return this.executeSQL(sql, [infomation, infomationID], callback);
+    };
+
     return ClientProvider;
 
   })();

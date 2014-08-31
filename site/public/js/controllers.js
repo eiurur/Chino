@@ -36,6 +36,11 @@ angular.module('myApp.controllers', ['textAngular'])
     }
 
 
+    /**
+     * ここから始まり
+     */
+
+    $scope.alert = null;
 
     $scope.signIn = function signIn(email, password) {
 
@@ -54,7 +59,8 @@ angular.module('myApp.controllers', ['textAngular'])
             // Lo-dashのisEmptyは配列、オブジェクト、文字列しか判定してくれない。 === 数字は全てtureになる。
             // if(_.isUndefined(data.token)) {
             if(data.data.userNum === 0) {
-              $location.path("/signin");
+              // $location.path("/signin");
+              $scope.alert = { type: 'error', msg: 'メールアドレスまたはパスワードが間違っています。'};
             } else {
               AuthenticationService.isAuthenticated = true;
               $window.sessionStorage.token = data.token;
@@ -64,7 +70,8 @@ angular.module('myApp.controllers', ['textAngular'])
 
         }).error(function(status, data) {
 
-          console.log("Sign In Failure!!!!!!!!!!");
+          console.log("sign in 失敗");
+
           console.log(status);
           console.log(data);
 
@@ -110,10 +117,16 @@ angular.module('myApp.controllers', ['textAngular'])
       console.log("signUp -----------------------------------------------------------");
 
       if (AuthenticationService.isAuthenticated) {
+          alert("b");
         $location.path("/");
       } else {
         ClientService.signUp(email, password).success(function(data) {
-          $location.path("/signin");
+          // 同じメールアドレスの人がいた場合
+          if(_.isUndefined(data.data)) {
+            $scope.alert = { type: 'error', msg: '登録済みのメールアドレスです。'};
+          } else {
+            $location.path("/signin");
+          }
         }).error(function(status, data) {
           console.log(status);
           console.log(data);
@@ -145,6 +158,9 @@ angular.module('myApp.controllers', ['textAngular'])
     var storeData = null;
     var UUID = null;
 
+    //　これがnull以外なら広告内容の編集とみなし、INSERTではなくUPDATEを実行する
+    $scope.infomationID = null;
+
     // 仮
     $scope.infomationList = [];
     $scope.isRestRegisteredStore = false;
@@ -175,6 +191,8 @@ angular.module('myApp.controllers', ['textAngular'])
             // どっちかあとで消す
             UUID = data.data.UUID;
             storeData = data.data;
+
+            console.log("storeData = ", storeData);
 
             $scope.storeName = data.data.name || 'No Name';
             $scope.isRestRegisteredStore = true;
@@ -235,28 +253,79 @@ angular.module('myApp.controllers', ['textAngular'])
 
     $scope.isAuthenticated = AuthenticationService.isAuthenticated;
 
+
+    /**
+     * Timepicker
+     */
+    $scope.mytime = new Date();
+
+    $scope.hstep = 1;
+    $scope.mstep = 15;
+
+    $scope.options = {
+      hstep: [1, 2, 3],
+      mstep: [1, 5, 10, 15, 25, 30]
+    };
+
+    $scope.ismeridian = true;
+    $scope.toggleMode = function() {
+      $scope.ismeridian = ! $scope.ismeridian;
+    };
+
+    $scope.update = function() {
+      var d = new Date();
+      d.setHours( 14 );
+      d.setMinutes( 0 );
+      $scope.mytime = d;
+    };
+
+    $scope.changed = function () {
+      console.log('Time changed to: ' + $scope.mytime);
+    };
+
+    $scope.clear = function() {
+      $scope.mytime = null;
+    };
+
+
+    /**
+     * Pagenation
+     */
+    $scope.totalItems = 64;
+    $scope.currentPage = 4;
+
+    $scope.setPage = function (pageNo) {
+      $scope.currentPage = pageNo;
+    };
+
+    $scope.pageChanged = function() {
+      console.log('Page changed to: ' + $scope.currentPage);
+    };
+
+    $scope.maxSize = 5;
+    $scope.bigTotalItems = 175;
+    $scope.bigCurrentPage = 1;
+
+
+    /**
+     * 登録用
+     */
     $scope.registerInfomation = function() {
-
-      console.log("regist Infomation");
-      console.log("salesText  = " + $scope.salesText);
-      console.log("htmlVariable  = " + $scope.htmlVariable);
-      console.log("storeCategory  = " + $scope.storeCategory);
-      console.log("storeCategory  = ", $scope.storeCategory);
-
-
-      registerInfomation(0);
-
+      if(_.isNull($scope.infomationID)){
+        console.log("aaa");
+        registerInfomation(0);
+        return;
+      }
+      updateInfomation(0);
     };
 
     // 広告情報を下書きとして保存
     $scope.draftInfomation = function() {
-      registerInfomation(1);
-    }
-
-    // TODO: Serviceに移動
-    function clearScope() {
-      $scope.salesText = '';
-      $scope.htmlVariable = '';
+      if(_.isNull($scope.infomationID)){
+        registerInfomation(1);
+        return;
+      }
+      updateInfomation(1);
     }
 
     function registerInfomation(isDraft) {
@@ -269,62 +338,137 @@ angular.module('myApp.controllers', ['textAngular'])
         , isDraft: isDraft
       }).success(function (data, status, headers, config) {
 
-          console.log("registerInfomation data", data);
-          console.log("registerInfomation $scope.storeCategory", $scope.storeCategory);
+        console.log("registerInfomation data", data);
+        console.log("registerInfomation $scope.storeCategory", $scope.storeCategory);
 
-          clearScope();
+        clearScope();
 
-          if(!($scope.isRestRegisteredStore)) {
+        if(!($scope.isRestRegisteredStore)) {
 
-            // お店の情報を登録
-            $http.post("/api/updateStoreRestInfomation", {
-                UUID: UUID
-              , name: $scope.storeName
-              , url: $scope.storeURL
-              , categoryID: $scope.storeCategory.id
-            }).success(function (data, status, headers, config) {
-              console.log("registerInfomation data", data);
+          // お店の情報を登録
+          $http.post("/api/updateStoreRestInfomation", {
+              UUID: UUID
+            , name: $scope.storeName
+            , url: $scope.storeURL
+            , categoryID: $scope.storeCategory.id
+          }).success(function (data, status, headers, config) {
 
-              $scope.isRestRegisteredStore = true;
-            }).error(function (data, status, headers, config) {
-                // TODO
-            });
+            console.log("registerInfomation data", data);
+            $scope.isRestRegisteredStore = true;
 
-          }
-
-          // 登録した広告情報を問い合わせ、Listに格納
-          $http.post('/api/getLastInfomation', {
-            UUID: UUID
-          }).success(function(data) {
-
-            console.log("controller getLastInfomation data = ", data.data);
-
-            $scope.infomationList.push(data.data);
-
-            console.log("追加後 $scope.infomations list = ", $scope.infomationList);
-
-
-          }).error(function(status, data) {
-
-            console.log(status);
-            console.log(data);
+          }).error(function (data, status, headers, config) {
+              // TODO
           });
 
-          // 登録した宣伝情報をログのリスト配列に追加
-          // $http.get('api/getLastInfomationID')
-          //   .success(function(data) {
-          //     var lastID = data.id;
+        }
 
-          //     // 最後に
-          //   }).error(function(status, data) {
+        // 登録した広告情報を問い合わせ、Listに格納
+        $http.post('/api/getLastInfomation', {
+          UUID: UUID
+        }).success(function(data) {
 
-          //     console.log(status);
-          //     console.log(data);
+          console.log("controller getLastInfomation data = ", data.data);
 
-          //   });
+          $scope.infomationList.push(data.data);
+
+          // 広告内容編集状態から初期状態に戻す
+          $scope.infomationID = null;
+
+          console.log("追加後 $scope.infomations list = ", $scope.infomationList);
+
+        }).error(function(status, data) {
+
+          console.log(status);
+          console.log(data);
+        });
+
+        // 登録した宣伝情報をログのリスト配列に追加
+        // $http.get('api/getLastInfomationID')
+        //   .success(function(data) {
+        //     var lastID = data.id;
+
+        //     // 最後に
+        //   }).error(function(status, data) {
+
+        //     console.log(status);
+        //     console.log(data);
+
+        //   });
 
       }).error(function (data, status, headers, config) {
           // TODO
       });
     }
+
+    // TODO: Serviceに移動
+    function clearScope() {
+      $scope.salesText = '';
+      $scope.htmlVariable = '';
+    }
+
+
+    /**
+     * 編集用
+     */
+    $scope.edit = function(e) {
+      console.log($scope.infomationID);
+      var target = $(e.target);
+      var salesTextLog = target.data('salestext');
+      var detailTextLog = target.data('detailtext');
+      $scope.infomationID = target.data('id');
+      $scope.salesText = salesTextLog;
+      $scope.htmlVariable = detailTextLog;
+
+      //// TODO: activeクラスを付与
+
+      console.log($scope.infomationID);
+      console.log(salesTextLog);
+      console.log(detailTextLog);
+    }
+
+    function updateInfomation(isDraft) {
+
+      // 広告内容の修正
+      $http.post("/api/updateInfomation", {
+          infomationID: $scope.infomationID
+        , salesText: $scope.salesText
+        , detailText: $scope.htmlVariable
+        , isDraft: isDraft
+      }).success(function (data, status, headers, config) {
+
+        console.log("registerInfomation data", data);
+
+        clearScope();
+
+        // 編集した広告情報を問い合わせ、Listに反映
+        $http.post('/api/getInfomationByInfomationID', {
+          infomationID: $scope.infomationID
+        }).success(function(data) {
+
+          console.log("controller getInfomationByInfomationID data = ", data.data);
+
+          var match = _.each($scope.infomationList, function(item, i) {
+            if(item.id === $scope.infomationID) {
+              console.log(item);
+              $scope.infomationList[i] = data.data;
+            }
+          });
+
+          $scope.infomationID = null;
+
+          console.log("追加後 $scope.infomations list = ", $scope.infomationList);
+
+
+        }).error(function(status, data) {
+
+          console.log(status);
+          console.log(data);
+        });
+
+
+      }).error(function (data, status, headers, config) {
+          // TODO
+      });
+    }
+
   }]);

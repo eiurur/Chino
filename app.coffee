@@ -28,14 +28,14 @@ tasks4startUp = [
     setTimeout (-> callback(null, "Create! Server\n")), s.GRACE_TIME_SERVER
     return
 
-  , (callback) ->
+  # , (callback) ->
 
-    #
-    my.c "■ Actives Clear Task start"
-    # manageCron null, "Clear "
-    clearActives null, "Clear "
-    setTimeout (-> callback(null, "Actives Data CLEAR \n")), s.GRACE_TIME_CLEAR
-    return
+  #   #
+  #   my.c "■ Actives Clear Task start"
+  #   # manageCron null, "Clear "
+  #   clearActives null, "Clear "
+  #   setTimeout (-> callback(null, "Actives Data CLEAR \n")), s.GRACE_TIME_CLEAR
+  #   return
 
 ]
 

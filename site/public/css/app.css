@@ -54,18 +54,6 @@ a {
   padding: 0 25px;
 }
 
-.select-arrow {
-  -moz-transition: left .1s;
-  -webkit-transition: left .1s;
-  -o-transition: left .1s;
-  transition: left .1s;
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  margin: 20px 0 0 20px;
-}
-
 .container {
     height: 100%;
 }
@@ -73,7 +61,7 @@ a {
 /* Google Login */
 .form-signin
 {
-    max-width: 330px;
+    max-width: 400px;
     padding: 15px;
     margin: 0 auto;
 }
@@ -133,16 +121,6 @@ a {
     font-weight: 400;
     display: block;
 }
-.profile-img
-{
-    width: 96px;
-    height: 96px;
-    margin: 0 auto 10px;
-    display: block;
-    -moz-border-radius: 50%;
-    -webkit-border-radius: 50%;
-    border-radius: 50%;
-}
 .need-help
 {
     margin-top: 10px;
@@ -165,11 +143,33 @@ a {
   font-size: 30px;
 }
 
-/* ちらつき防止 */
-.ng-hide {
-  display: none !important;
-}
 
 .display-hide {
   display: none;
+}
+
+.ta-scroll-window {;
+  margin-top: 10px;
+}
+
+.form-group {
+  margin-bottom: 40px;
+}
+
+.store-main-infomation {
+  font-size: 3.8em;
+}
+
+.store-sub-infomation {
+  color: #ccc;
+  font-size: 0.3em;
+  padding-left: 30px;
+}
+
+.store-sub-infomation a{
+  color: #ccc;
+}
+
+.padding-right-20 {
+  padding-right: 20px;
 }

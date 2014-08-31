@@ -116,4 +116,48 @@ angular.module('myApp.directives', [])
         element.append(tag);
       }
     }
+  })
+  .directive('passwordMatch', function() {
+    return {
+      restrict: 'A',
+      scope:true,
+      require: 'ngModel',
+      link: function (scope, elem , attrs,control) {
+        var checker = function () {
+
+          var e1 = scope.$eval(attrs.ngModel);
+
+          var e2 = scope.$eval(attrs.passwordMatch);
+          return e1 == e2;
+        };
+        scope.$watch(checker, function (n) {
+          control.$setValidity("unique", n);
+        });
+      }
+    };
+  })
+  .directive('editInfomation', function() {
+    return {
+      restrict: 'A',
+      scope: {
+          salesTextLog: '@'
+        , detailTextLog: '@'
+        , salesText: '='
+        , htmlVariable: '='
+        // twoWayBind: "=myTwoWayBind",
+        // oneWayBind: "&myOneWayBind"
+      },
+      link: function(scope, element, attrs) {
+        var item, srcPhoto, targetPhoto, targetContent;
+
+        element.bind('click', function() {
+          var infomationID = element[0].attributes[0].value;
+          var infomationIDOnlyNumber = infomationID.replace(/[^\d]/g, '');
+
+          // 置き換え
+          scope.salesText = scope.salesTextLog;
+          scope.htmlVariable = scope.detailTextLog;
+        });
+      }
+    };
   });

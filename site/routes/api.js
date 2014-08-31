@@ -155,6 +155,8 @@ exports.signUp = function(req, res) {
 
     if(err) console.log(err);
 
+    console.log("sign up data = ", data);
+
     res.json({
       data: data
     });
@@ -400,6 +402,63 @@ exports.getLastInfomation = function(req, res) {
 
     res.json({
       data: data[0]
+    });
+  });
+
+};
+
+
+exports.getInfomationByInfomationID = function(req, res) {
+
+  // この代入いらない？
+  var infomationID = req.body.infomationID;
+
+  ClientProvider.getInfomationByInfomationID({
+    infomationID: infomationID
+  }, function(err, data) {
+    console.log("--------- getInfomationByInfomationID --------");
+
+    console.log("getInfomationByInfomationID data = ", data);
+    console.log("getInfomationByInfomationID data[0] = ", data[0]);
+
+    res.json({
+      data: data[0]
+    });
+  });
+
+};
+
+
+exports.updateInfomation = function(req, res) {
+
+  // この代入いらない？
+  var infomationID = req.body.infomationID
+    , salesText = req.body.salesText
+    , detailText = req.body.detailText
+    , isDraft = req.body.isDraft
+    ;
+
+    console.log("updateInfomation req = ", req.body);
+
+  ClientProvider.updateInfomation({
+      infomationID: infomationID
+    , salesText: salesText
+    , detailText: detailText
+    , isDraft: isDraft
+  }, function(err, data) {
+    console.log("--------- updateInfomation --------");
+
+    console.log("updateInfomation data = ", data);
+
+    var data = "ok";
+
+    if(err) {
+      console.log(err);
+      data = "err";
+    }
+
+    res.json({
+      data: data
     });
   });
 

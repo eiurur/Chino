@@ -368,4 +368,41 @@ class ClientProvider
     @executeSQL sql, UUID, callback
 
 
+  getInfomationByInfomationID: (params, callback) ->
+
+    console.log '-------- getInfomationByInfomationID --------'
+
+    infomationID = params['infomationID']
+
+    sql = 'SELECT id, salesText, detailText, isDraft, createdAt, updatedAt
+    FROM infomations
+    WHERE id = ?
+    ORDER BY id DESC
+    LIMIT 1'
+
+    @executeSQL sql, infomationID, callback
+
+
+  updateInfomation: (params, callback) ->
+
+    console.log '-------- updateInfomation --------'
+
+    nowDate  = my.formatYMDHms()
+
+    infomationID = params['infomationID']
+    salesText = params['salesText']
+    detailText = params['detailText']
+    isDraft = params['isDraft']
+
+    infomation =
+      id: infomationID
+      salesText: salesText
+      detailText: detailText
+      isDraft: isDraft
+      updatedAt: nowDate
+
+    sql = 'UPDATE infomations SET ? WHERE id = ?'
+
+    @executeSQL sql, [infomation, infomationID], callback
+
 exports.ClientProvider = new ClientProvider()

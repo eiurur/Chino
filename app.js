@@ -26,12 +26,6 @@
       setTimeout((function() {
         return callback(null, "Create! Server\n");
       }), s.GRACE_TIME_SERVER);
-    }, function(callback) {
-      my.c("■ Actives Clear Task start");
-      clearActives(null, "Clear ");
-      setTimeout((function() {
-        return callback(null, "Actives Data CLEAR \n");
-      }), s.GRACE_TIME_CLEAR);
     }
   ];
 
